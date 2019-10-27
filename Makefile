@@ -16,11 +16,12 @@ build:
 	(cd vasm && make CPU=m68k SYNTAX=std && chmod ugo+rx vasmm68k_std)
 
 install:
-	cp vasm/vasmm68k_mot $(DESTDIR)
-	chmod ugo+rx $(DESTDIR)/vasmm68k_mot
+	mkdir -p $(DESTDIR)/usr/bin
+	cp vasm/vasmm68k_mot $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_mot
 
-	cp vasm/vasmm68k_std $(DESTDIR)
-	chmod ugo+rx $(DESTDIR)/vasmm68k_std
+	cp vasm/vasmm68k_std $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_std
 
 uninstall:
 	rm -f /usr/bin/vasmm68k_mot
