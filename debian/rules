@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+
+URL = http://server.owl.de/~frank/tags/vasm1_8f.tar.gz
+VERSION = 1.4.25
+
+DISTRIBUTION = $(shell lsb_release -sr)
+PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0
+
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	make clean
+	make download URL=$(URL)
+
+#override_dh_auto_test:
+#
+#override_dh_auto_build:
+#    make build
+#
+#override_dh_auto_install:
+#    make install
+
+override_dh_gencontrol:
+	dh_gencontrol -- -v$(PACKAGEVERSION)

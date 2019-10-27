@@ -1,0 +1,9 @@
+Source: vasm
+Maintainer: Username <user@email.com>
+Build-Depends: debhelper (>= 9),
+               wget, ca-certificates, lsb-release,
+               libevent-dev
+
+Package: vasm
+Architecture: any
+Description: vasm assembler thingy
