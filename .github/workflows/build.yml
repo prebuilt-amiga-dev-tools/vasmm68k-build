@@ -10,7 +10,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v1
-        path: build
+        with:
+          path: build
       - name: install prerequisites
         run: sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev
       - name: build .deb
