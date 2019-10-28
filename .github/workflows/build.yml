@@ -9,12 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v1
+      - name: install prerequisites
+        run: sudo apt-get -y install debhelper devscripts
       - name: build .deb
-        run: |
-          pwd
-          echo ${GITHUB_WORKSPACE}
-          ls -al ${GITHUB_WORKSPACE}
-#          sudo apt-get -y install debhelper devscripts
-#          sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
+        run: sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
           
 
