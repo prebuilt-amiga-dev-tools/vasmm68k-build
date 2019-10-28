@@ -12,7 +12,8 @@ jobs:
       - name: build .deb
         run: |
           pwd
-          ls -al
+          echo ${GITHUB_WORKSPACE}
+          ls -al ${GITHUB_WORKSPACE}
 #          sudo apt-get -y install debhelper devscripts
 #          sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
           
