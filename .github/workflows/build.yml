@@ -1,0 +1,16 @@
+
+on: push
+#  push:
+#    tags: '**'
+
+jobs:
+  build:
+    name: Build
+    runs_on: ubuntu-latest
+    timeout_minutes: 30
+    steps:
+      - name: build .deb
+        run: |
+          sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
+          
+
