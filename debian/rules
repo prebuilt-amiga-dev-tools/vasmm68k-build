@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 URL = http://server.owl.de/~frank/tags/vasm1_8f.tar.gz
-VERSION = 1.4.25
+VERSION = 1.8f
 
 DISTRIBUTION = $(shell lsb_release -sr)
 PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0

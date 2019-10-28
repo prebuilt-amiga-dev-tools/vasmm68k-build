@@ -1,9 +1,12 @@
-Source: vasm
+Source: vasmm68k
 Maintainer: Username <user@email.com>
 Build-Depends: debhelper (>= 9),
                wget, ca-certificates, lsb-release,
                libevent-dev
 
-Package: vasm
+Package: vasmm68k
 Architecture: any
-Description: vasm assembler thingy
+Description: vasm (m68k) assembler thingy
+Section: development
+Priority: optional
+
