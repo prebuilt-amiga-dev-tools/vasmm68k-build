@@ -4,8 +4,8 @@ on: [push]
 #    tags: '**'
 
 jobs:
-  build:
-    name: Build
+  build-linux:
+    name: Build for Linux
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -14,3 +14,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev
       - name: build .deb
         run: sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
+
+  build-windows:
+    name: Build for Windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v1
+      - name: build executables
+        run: nmake /F Makefile.win32 clean download build
