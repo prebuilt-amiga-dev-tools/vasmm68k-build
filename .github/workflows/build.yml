@@ -24,4 +24,6 @@ jobs:
       - name: build executables
         run: |
           .\set-msvc-path.ps1
+          echo "invoking nmake"
           nmake clean download build
+          echo "nmake done"
