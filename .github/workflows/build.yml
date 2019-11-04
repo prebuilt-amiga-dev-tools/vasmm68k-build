@@ -24,4 +24,4 @@ jobs:
       - name: build executables
         run: |
           .\set-msvc-path.ps1
-          Start-Process nmake.exe -Args clean,download,build -Wait -NoNewWindow
+          Start-Process nmake.exe -Args clean,download,build -Wait -NoNewWindow; if ($LASTEXITCODE) { throw }
