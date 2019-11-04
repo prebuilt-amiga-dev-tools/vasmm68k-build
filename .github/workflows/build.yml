@@ -27,7 +27,7 @@ jobs:
           echo "locating nmake"
           (get-command nmake.exe).source
           echo "clean 1 begins"
-          nmake clean
+          nmake /?
           echo "clean 1 done"
           nmake clean
           echo "clean 2 done"
