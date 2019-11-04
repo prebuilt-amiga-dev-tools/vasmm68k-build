@@ -22,4 +22,4 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: build executables
-        run: nmake /F Makefile.win32 clean download build
+        run: powershell .\set-msvc-path.ps1; nmake clean download build
