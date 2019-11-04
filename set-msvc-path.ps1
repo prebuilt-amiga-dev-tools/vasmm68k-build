@@ -14,16 +14,12 @@ if (Test-Path $vswherePath) {
       cmd /s /c """$vsdevcmdPath"" $vsdevcmdArgs && set" | where { $_ -match '(\w+)=(.*)' } | foreach {
         $null = New-Item -Force -Path "Env:\$($Matches[1])" -Value $Matches[2]
       }
-      Write-Output "Done."
     } else {
-      Write-Host "A"
       Write-Error -Message "Visual Studio installation at $installationPath does not include vsdevcmd.bat" -Exception ([System.IO.FileNotFoundException]::New()) -ErrorAction Stop
     }
   } else {
-    Write-Host "B"
     Write-Error -Message "vswhere.exe did not find any Visual Studio installation" -Exception ([System.ApplicationException]::New()) -ErrorAction Stop
   }
 } else {
-  Write-Host "C"
   Write-Error -Message "Could not find vswhere.exe in default location: $vswherePath" -Exception ([System.IO.FileNotFoundException]::New()) -ErrorAction Stop
 }
