@@ -22,4 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: build executables
-        run: powershell .\set-msvc-path.ps1; nmake clean download build
+        run: |
+          .\set-msvc-path.ps1
+          nmake clean download build
