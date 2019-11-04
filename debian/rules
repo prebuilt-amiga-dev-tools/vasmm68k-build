@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-include ../Config.mk
+include Config.mk
 
 DISTRIBUTION = $(shell lsb_release -sr)
 PACKAGEVERSION = $(VASM_VERSION)-0~$(DISTRIBUTION)0
