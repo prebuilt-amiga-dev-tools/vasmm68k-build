@@ -27,7 +27,7 @@ jobs:
           echo "locating nmake"
           (get-command nmake.exe).source
           echo "clean 1 begins"
-          Sart-Process nmake.exe -Args "/?" -Wait
+          Start-Process nmake.exe -Args "/?" -Wait -NoNewWindow
           echo "clean 1 done"
           nmake clean
           echo "clean 2 done"
