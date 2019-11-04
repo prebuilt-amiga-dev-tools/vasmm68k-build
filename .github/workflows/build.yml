@@ -24,10 +24,10 @@ jobs:
       - name: build executables
         run: |
           .\set-msvc-path.ps1
-          echo "invoking nmake"
+          echo "locating nmake"
           (get-command nmake.exe).source
           echo "clean 1 begins"
-          & nmake clean
+          nmake clean
           echo "clean 1 done"
           nmake clean
           echo "clean 2 done"
