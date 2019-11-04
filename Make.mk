@@ -9,7 +9,7 @@ default: build
 
 clean:
 	rm -rf vasm
-	rm vasm.tar.gz
+	rm -f vasm.tar.gz
 
 download:
 	wget -O vasm.tar.gz $(VASM_URL)
