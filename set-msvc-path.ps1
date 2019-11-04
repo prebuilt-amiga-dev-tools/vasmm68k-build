@@ -14,6 +14,7 @@ if (Test-Path $vswherePath) {
       cmd /s /c """$vsdevcmdPath"" $vsdevcmdArgs && set" | where { $_ -match '(\w+)=(.*)' } | foreach {
         $null = New-Item -Force -Path "Env:\$($Matches[1])" -Value $Matches[2]
       }
+      get-command nmake.exe
     } else {
       Write-Error -Message "Visual Studio installation at $installationPath does not include vsdevcmd.bat" -Exception ([System.IO.FileNotFoundException]::New()) -ErrorAction Stop
     }
