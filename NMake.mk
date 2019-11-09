@@ -17,6 +17,7 @@ download:
  	powershell -Command "$$ErrorActionPreference = 'Stop'; Invoke-WebRequest -Uri $(VASM_URL) -OutFile vasm.tar.gz"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; tar -xvf vasm.tar.gz"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item vasm.tar.gz"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item Makefile.Win32 vasm"
 
 build:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(VASMDIR)/obj_win32"

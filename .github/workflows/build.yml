@@ -24,5 +24,4 @@ jobs:
       - name: build executables
         run: |
           .\set-msvc-path.ps1
-          .\patch-vasmm68k-windows-makefile.ps1
           if ((Start-Process nmake.exe -ArgumentList clean,download,build -NoNewWindow -Wait -PassThru).ExitCode) { throw }
