@@ -1,10 +1,9 @@
 #!/usr/bin/make -f
 
-URL = http://server.owl.de/~frank/tags/vasm1_8f.tar.gz
-VERSION = 1.8f
+include Config.mk
 
 DISTRIBUTION = $(shell lsb_release -sr)
-PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0
+PACKAGEVERSION = $(VASM_VERSION)-0~$(DISTRIBUTION)0
 
 
 %:
@@ -12,7 +11,7 @@ PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0
 
 override_dh_auto_clean:
 	make clean
-	make download URL=$(URL)
+	make download
 
 #override_dh_auto_test:
 #

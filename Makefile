@@ -1,28 +1,12 @@
+# Master makefile, which includes platform-specific makefile depending on whether
+#  the make tool used is Make or NMake
 
-default: build
-
-.PHONY: clean download build install uninstall
-
-clean:
-	rm -rf vasm
-
-download:
-	wget -O vasm.tar.gz $(URL)
-	tar -xvf vasm.tar.gz
-	rm vasm.tar.gz
-
-build:
-	(cd vasm && make CPU=m68k SYNTAX=mot && chmod ugo+rx vasmm68k_mot)
-	(cd vasm && make CPU=m68k SYNTAX=std && chmod ugo+rx vasmm68k_std)
-
-install:
-	mkdir -p $(DESTDIR)/usr/bin
-	cp vasm/vasmm68k_mot $(DESTDIR)/usr/bin/
-	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_mot
-
-	cp vasm/vasmm68k_std $(DESTDIR)/usr/bin/
-	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_std
-
-uninstall:
-	rm -f /usr/bin/vasmm68k_mot
-	rm -f /usr/bin/vasmm68k_std
+# \
+!ifndef 0 # \
+# NMAKE code here \
+!include NMake.mk # \
+!else
+# Make code here
+include Make.mk
+# \
+!endif
