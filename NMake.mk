@@ -14,6 +14,7 @@ default: build
 clean:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(VASMDIR)) { Remove-Item -Recurse -Force $(VASMDIR) }"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path vasm.tar.gz) { Remove-Item -Recurse -Force vasm.tar.gz }"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)) { Remove-Item -Recurse -Force $(BUILD_RESULTS_DIR) }"
 
 download:
  	powershell -Command "$$ErrorActionPreference = 'Stop'; Invoke-WebRequest -Uri $(VASM_URL) -OutFile vasm.tar.gz"
@@ -30,3 +31,4 @@ package:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe) { Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe }; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/vasmm68k_std.exe) { Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_std.exe }; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/vasmm68k_std.exe"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; Compress-Archive -Path '$(BUILD_RESULTS_DIR)/vasmm68k_mot.exe', '$(BUILD_RESULTS_DIR)/vasmm68k_std.exe' -DestinationPath $(BUILD_RESULTS_DIR)/windows-binaries.zip; Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe; Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_std.exe"
