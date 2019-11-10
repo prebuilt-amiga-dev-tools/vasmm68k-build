@@ -5,6 +5,8 @@
 
 VASMDIR=vasm
 
+BUILD_RESULTS_DIR = build_results
+
 default: build
 
 .PHONY: clean download build install uninstall
@@ -21,5 +23,10 @@ download:
 
 build:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(VASMDIR)/obj_win32"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.Win32 CPU=m68k SYNTAX=mot; if ($$LASTEXITCODE -ne 0) { throw }; if (Test-Path vasmm68k_mot.exe) { Remove-Item -Force vasmm68k_mot.exe }; Copy-Item vasmm68k_mot_win32.exe vasmm68k_mot.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.win32 CPU=m68k SYNTAX=std; if ($$LASTEXITCODE -ne 0) { throw }; if (Test-Path vasmm68k_std.exe) { Remove-Item -Force vasmm68k_std.exe }; Copy-Item vasmm68k_std_win32.exe vasmm68k_std.exe"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.Win32 CPU=m68k SYNTAX=mot; if ($$LASTEXITCODE -ne 0) { throw }"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.win32 CPU=m68k SYNTAX=std; if ($$LASTEXITCODE -ne 0) { throw }"
+
+package:
+	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe) { Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe }; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/vasmm68k_mot.exe"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/vasmm68k_std.exe) { Remove-Item -Force $(BUILD_RESULTS_DIR)/vasmm68k_std.exe }; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/vasmm68k_std.exe"
