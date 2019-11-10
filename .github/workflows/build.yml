@@ -16,6 +16,11 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev
       - name: build .deb
         run: sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
+      - name: upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: linux-deb-package
+          path: ../vasmm68k_*_amd64.deb
 
   build-windows:
     name: Build for Windows
