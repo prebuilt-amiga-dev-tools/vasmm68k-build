@@ -5,3 +5,6 @@
 /debian/vasmm68k*
 /debian/debhelper-build-stamp
 /debian/files
+
+# Ignore build artifacts
+/build_results
