@@ -1,1 +1,10 @@
+# Ignore vasm source build folder
 /vasm
+
+# Ignore intermediate files from .deb package building process
+/debian/vasmm68k*
+/debian/debhelper-build-stamp
+/debian/files
+
+# Ignore build artifacts
+/build_results
