@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: linux-deb-package
-          path: build_results/vasmm68k_*_amd64.deb
+          path: build_results
 
   build-windows:
     name: Build for Windows
