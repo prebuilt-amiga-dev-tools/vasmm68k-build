@@ -3,6 +3,8 @@
 
 include Config.mk
 
+BUILD_RESULTS_DIR = build_results
+
 default: build
 
 .PHONY: clean download build install uninstall
@@ -19,6 +21,12 @@ download:
 build:
 	(cd vasm && make CPU=m68k SYNTAX=mot && chmod ugo+rx vasmm68k_mot)
 	(cd vasm && make CPU=m68k SYNTAX=std && chmod ugo+rx vasmm68k_std)
+
+package:
+	mkdir -p $(BUILD_RESULTS_DIR)
+	cp ../vasmm68k_*_amd64.deb $(BUILD_RESULTS_DIR)
+	(cd $(BUILD_RESULTS_DIR) && tar -cvf linux-deb-package.tgz vasmm68k_*_amd64.deb)
+	rm $(BUILD_RESULTS_DIR)/vasmm68k_*_amd64.deb
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin

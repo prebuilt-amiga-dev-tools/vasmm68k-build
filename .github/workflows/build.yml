@@ -26,7 +26,7 @@ jobs:
       - name: build .deb
         run: |
           sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
-          mkdir build_results && cp ../vasmm68k_*_amd64.deb build_results
+          make package
       - name: upload artifacts
         uses: actions/upload-artifact@v1
         with:
