@@ -1,9 +1,18 @@
 
 name: Build
 
-on: [push, pull_request]
-#  push:
-#    tags: '**'
+on:
+  push:
+    # Always build when there are new commits to master
+    branches:
+      - master
+    # Always build release-tags
+    tags:
+      - 'releases/**'
+  # Always build pull requests
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build-linux:
@@ -39,3 +48,47 @@ jobs:
         with:
           name: windows-binaries
           path: build_results
+
+  release:
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [build-linux, build-windows]
+    steps:
+      - name: Download linux-deb-package
+        uses: actions/download-artifact@v1
+        with:
+          name: linux-deb-package
+      - name: Download windows-binaries
+        uses: actions/download-artifact@v1
+        with:
+          name: windows-binaries
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload linux-deb-package
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./linux-deb-package.zip
+          asset_name: linux-deb-package.zip
+          asset_content_type: application/zip
+      - name: Upload windows-binaries
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./windows-binaries.zip
+          asset_name: windows-binaries.zip
+          asset_content_type: application/zip
