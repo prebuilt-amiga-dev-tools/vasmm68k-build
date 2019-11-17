@@ -2,8 +2,11 @@
 
 include Config.mk
 
-DISTRIBUTION = $(shell lsb_release -sr)
-PACKAGEVERSION = $(VASM_VERSION)-0~$(DISTRIBUTION)0
+ifeq ($(strip $(DISTRIBUTION)),)
+DISTRIBUTION := $(shell lsb_release -sr)
+endif
+
+PACKAGEVERSION = $(VASM_VERSION)-$(DISTRIBUTION)
 
 
 %:

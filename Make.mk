@@ -3,6 +3,10 @@
 
 include Config.mk
 
+ifeq ($(strip $(DISTRIBUTION)),)
+DISTRIBUTION := $(shell lsb_release -sr)
+endif
+
 BUILD_RESULTS_DIR = build_results
 
 .PHONY: clean download build install uninstall
@@ -17,15 +21,14 @@ debuild:
 
 package:
 	mkdir -p $(BUILD_RESULTS_DIR)
-	cp ../vasmm68k_*_amd64.deb $(BUILD_RESULTS_DIR)
-	(cd $(BUILD_RESULTS_DIR) && tar -cvf linux-deb-package.tgz vasmm68k_*_amd64.deb)
+	cp ../vasmm68k_$(VASM_VERSION)-$(DISTRIBUTION)_amd64.deb $(BUILD_RESULTS_DIR)
 
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
 # easy local testing of a newly-built .deb package
 
 install-deb:
-	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_*_amd64.deb
+	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)-$(DISTRIBUTION)_amd64.deb
 
 remove-deb:
 	sudo dpkg -r vasmm68k
