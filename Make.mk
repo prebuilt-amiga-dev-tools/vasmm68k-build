@@ -13,7 +13,7 @@ default: debuild package
 # These build steps are intended to be invoked manually with make
 
 debuild:
-	sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" sudo debuild --no-conf -us -uc
+	sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc
 
 package:
 	mkdir -p $(BUILD_RESULTS_DIR)
