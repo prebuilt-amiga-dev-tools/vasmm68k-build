@@ -37,6 +37,7 @@ remove-deb:
 clean:
 	rm -rf vasm
 	rm -f vasm.tar.gz
+	rm -rf $(BUILD_RESULTS_DIR)
 
 download:
 	wget -O vasm.tar.gz $(VASM_URL)
