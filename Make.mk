@@ -58,8 +58,12 @@ build:
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin
+
 	cp vasm/vasmm68k_mot $(DESTDIR)/usr/bin/
 	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_mot
 
 	cp vasm/vasmm68k_std $(DESTDIR)/usr/bin/
 	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_std
+
+	cp vasm/vobjdump $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vobjdump
