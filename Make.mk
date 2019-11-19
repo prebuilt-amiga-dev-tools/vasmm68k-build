@@ -3,6 +3,10 @@
 
 include Config.mk
 
+ifeq ($(strip $(DISTRIBUTION)),)
+DISTRIBUTION := unknown
+endif
+
 BUILD_RESULTS_DIR = build_results
 
 .PHONY: clean download build install uninstall
@@ -13,19 +17,23 @@ default: debuild package
 # These build steps are intended to be invoked manually with make
 
 debuild:
+	# ConfigDistribution.mk is used to make the DISTRIBUTION variable available within debian/rules
+	# It would be preferable to pass it via the command line, but I haven't figured out a way
+	#  to pass extra environment variables or defines through.
+	echo "DISTRIBUTION := $(DISTRIBUTION)" > ConfigDistribution.mk
 	sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc
+	rm ConfigDistribution.mk
 
 package:
 	mkdir -p $(BUILD_RESULTS_DIR)
-	cp ../vasmm68k_*_amd64.deb $(BUILD_RESULTS_DIR)
-	(cd $(BUILD_RESULTS_DIR) && tar -cvf linux-deb-package.tgz vasmm68k_*_amd64.deb)
+	cp ../vasmm68k_$(VASM_VERSION)-$(DISTRIBUTION)_amd64.deb $(BUILD_RESULTS_DIR)
 
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
 # easy local testing of a newly-built .deb package
 
 install-deb:
-	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_*_amd64.deb
+	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)-$(DISTRIBUTION)_amd64.deb
 
 remove-deb:
 	sudo dpkg -r vasmm68k

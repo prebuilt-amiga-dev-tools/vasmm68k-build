@@ -2,9 +2,10 @@
 
 include Config.mk
 
-DISTRIBUTION = $(shell lsb_release -sr)
-PACKAGEVERSION = $(VASM_VERSION)-0~$(DISTRIBUTION)0
+# Import DISTRIBUTION variable from wrapper makefile
+include ConfigDistribution.mk
 
+PACKAGEVERSION = $(VASM_VERSION)-$(DISTRIBUTION)
 
 %:
 	dh $@

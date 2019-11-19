@@ -17,14 +17,14 @@ on:
 jobs:
   build-linux:
     name: Build for Linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v1
       - name: install prerequisites
         run: sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev
       - name: build .deb
-        run: make debuild package
+        run: DISTRIBUTION=xenial make debuild package
       - name: upload artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -54,6 +54,14 @@ jobs:
     timeout-minutes: 30
     needs: [build-linux, build-windows]
     steps:
+      - name: Get branch info
+        id: branch_name
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
+          # These can be accessed as ${{ steps.branch_name.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Download linux-deb-package
         uses: actions/download-artifact@v1
         with:
@@ -78,8 +86,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./linux-deb-package/linux-deb-package.tgz
-          asset_name: linux-deb-package.tgz
+          asset_path: ./linux-deb-package/vasmm68k_${{ steps.branch_name.outputs.SOURCE_VERSION }}-xenial_amd64.deb
+          asset_name: vasmm68k_${{ steps.branch_name.outputs.SOURCE_VERSION }}-xenial_amd64.deb
           asset_content_type: application/gzip
       - name: Upload windows-binaries
         uses: actions/upload-release-asset@v1.0.1
