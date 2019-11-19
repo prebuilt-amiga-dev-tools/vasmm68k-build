@@ -4,7 +4,7 @@
 include Config.mk
 
 ifeq ($(strip $(DISTRIBUTION)),)
-DISTRIBUTION := $(shell lsb_release -sr)
+DISTRIBUTION := unknown
 endif
 
 BUILD_RESULTS_DIR = build_results
@@ -17,7 +17,12 @@ default: debuild package
 # These build steps are intended to be invoked manually with make
 
 debuild:
+	# ConfigDistribution.mk is used to make the DISTRIBUTION variable available within debian/rules
+	# It would be preferable to pass it via the command line, but I haven't figured out a way
+	#  to pass extra environment variables or defines through.
+	echo "DISTRIBUTION := $(DISTRIBUTION)" > ConfigDistribution.mk
 	sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc
+	rm ConfigDistribution.mk
 
 package:
 	mkdir -p $(BUILD_RESULTS_DIR)
