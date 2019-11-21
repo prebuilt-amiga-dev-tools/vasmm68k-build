@@ -40,6 +40,7 @@ jobs:
       - name: build executables
         run: |
           .\set-msvc-path.ps1
+          .\set-wix-path.ps1
           if ((Start-Process nmake.exe -ArgumentList clean,download,build,package-binaries,package-wix -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: upload artifacts
         uses: actions/upload-artifact@v1
