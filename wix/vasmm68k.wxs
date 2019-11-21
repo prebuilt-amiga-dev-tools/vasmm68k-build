@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='windows-1252'?>
+
+<!-- This installer is largely based on https://helgeklein.com/blog/2014/09/real-world-example-wix-msi-application-installer/ -->
+
+<?define InfoURL="https://github.com/amiga-ci-tools/vasmm68k/" ?>
+
+<!-- 32-bit / 64-bit variables -->
+<?if $(sys.BUILDARCH) = "x86"?>
+  <?define Win64 = "no" ?>
+  <?define MinimumInstallerVersion = "100"?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?elseif $(sys.BUILDARCH)="x64"?>
+  <?define Win64 = "yes" ?>
+  <?define MinimumInstallerVersion = "200"?>
+  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else?>
+    <?error Unsupported value of sys.BUILDARCH=$(sys.BUILDARCH)?>
+<?endif?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Id='*' Name='!(loc.ApplicationName) $(var.VersionString)' UpgradeCode='D7356AA8-4655-41C2-8849-1F840804D907'
+    Language='1033' Codepage='1252' Version='$(var.VersionNumber)' Manufacturer='!(loc.ManufacturerName)'>
+
+    <Package Id='*' Keywords='Installer' Description='!(loc.ProductDescription)'
+      Comments='!(loc.Comments)' Manufacturer='!(loc.ManufacturerName)'
+      InstallerVersion='$(var.MinimumInstallerVersion)' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+
+    <!-- Set properties for add/remove programs -->
+    <Property Id="ARPHELPLINK" Value="$(var.InfoURL)" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />      <!-- Remove modify -->
+
+     <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
+    <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
+
+    <!-- This is the main installer sequence run when the product is actually installed -->
+    <InstallExecuteSequence>
+    
+        <!-- Determine the install location after the install path has been validated by the installer -->
+        <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
+
+    </InstallExecuteSequence>
+
+    <!-- Determine the directory of a previous installation (if one exists). If not INSTALLDIR stays empty -->
+    <Property Id="INSTALLDIR">
+        <RegistrySearch Id="DetermineInstallLocation" Type="raw" Root="HKLM" Key="Software\!(loc.ManufacturerName)\InstalledProducts\!(loc.ApplicationName)" Name="InstallLocation" />
+    </Property>
+
+    <!-- We do not have more than one medium (Floppy, CD, ...). Everything in one file. -->
+    <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='$(var.PlatformProgramFilesFolder)'>
+        <Directory Id='INSTALLDIR' Name='amiga-ci-tools'>
+          <Directory Id='bin' Name='bin'>
+
+            <Component Id='vasmm68k_mot_executable' Guid='14482F4F-EACB-4162-AAB3-397A9926B450' Win64='$(var.Win64)'>
+              <File Id='vasmm68k_mot' Name='vasmm68k_mot.exe' DiskId='1' Source='vasmm68k_mot.exe' KeyPath='yes'/>
+            </Component>
+
+            <Component Id='vasmm68k_std_executable' Guid='704A4883-45C7-4523-B4A2-515BFE76125D' Win64='$(var.Win64)'>
+              <File Id='vasmm68k_std' Name='vasmm68k_std.exe' DiskId='1' Source='vasmm68k_std.exe' KeyPath='yes'/>
+            </Component>
+
+            <Component Id='vobjdump_executable' Guid='1259F160-8114-4921-B520-210541E991EE' Win64='$(var.Win64)'>
+              <File Id='vobjdump' Name='vobjdump.exe' DiskId='1' Source='vobjdump.exe' KeyPath='yes'/>
+            </Component>
+
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Component Id='Path' Guid='dca16934-559b-420b-bb89-84b3b67042ee'>
+        <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]\bin' Permanent='no' Part='last' Action='set' System='no' />
+      </Component>
+
+      <!-- Registry entries -->
+      <Component Id="RegValInstallLocation_comp" Guid="E04C52CF-2640-4F8A-A4FA-B514797C0791">
+        <!-- Do NOT use the application's default registry key here, because THIS key will be removed on uninstall
+              (important when installing a newer version, because that is uninstall followed by install) -->
+        <RegistryKey Root="HKLM" Key="Software\!(loc.ManufacturerName)\InstalledProducts\!(loc.ApplicationName)">
+            <RegistryValue Name="InstallLocation" Value="[INSTALLDIR]" Type="string" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+    </Directory>
+
+    <Feature Id='Complete' Level='1' Title="!(loc.FeatureMainProgramTitle)" Description="!(loc.FeatureMainProgramDescription)">
+      <ComponentRef Id='vasmm68k_mot_executable' />
+      <ComponentRef Id='vasmm68k_std_executable' />
+      <ComponentRef Id='vobjdump_executable' />
+      <ComponentRef Id='RegValInstallLocation_comp' />
+      <ComponentRef Id='Path' />
+    </Feature>
+
+  </Product>
+</Wix>
