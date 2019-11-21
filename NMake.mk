@@ -33,7 +33,7 @@ package-binaries:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vobjdump_win32.exe $(BUILD_RESULTS_DIR)/temp/vobjdump.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Compress-Archive -Path '$(BUILD_RESULTS_DIR)/vasmm68k_mot.exe', '$(BUILD_RESULTS_DIR)/vasmm68k_std.exe', '$(BUILD_RESULTS_DIR)/vobjdump.exe' -DestinationPath $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-binaries.zip"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; Compress-Archive -Path '$(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe', '$(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe', '$(BUILD_RESULTS_DIR)/temp/vobjdump.exe' -DestinationPath $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-binaries.zip"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp"
 
 package-wix:
