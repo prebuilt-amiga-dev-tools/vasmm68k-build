@@ -3,8 +3,6 @@
 
 Write-Output "Adding Wix tools to environment..."
 
-$env:Path += ";${WIX}\bin";
-
-Write-Output $env:Path
+$env:Path += ";${env:WIX}\bin";
 
 Write-Output "Done."
