@@ -8,6 +8,3 @@
 
 # Ignore build artifacts
 /build_results
-
-# Ignore temporary config-file for make (used for sending commands Make.mk -> debuild -> debian/rules)
-ConfigDistribution.mk
