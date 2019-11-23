@@ -46,7 +46,7 @@ package-wix:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; & candle.exe wix/vasmm68k.wxs -o '$(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj' -arch x64 '-dApplicationVersion=$(VASM_VERSION)'"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; light.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj -o '$(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-installer.msi' -loc wix/vasmm68k.wxl"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION).wixpdb"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-installer.wixpdb"
 
 package-choco:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)"
