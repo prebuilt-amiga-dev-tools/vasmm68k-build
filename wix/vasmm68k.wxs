@@ -18,8 +18,8 @@
 <?endif?>
 
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <Product Id='*' Name='!(loc.ApplicationName) $(var.VersionString)' UpgradeCode='D7356AA8-4655-41C2-8849-1F840804D907'
-    Language='1033' Codepage='1252' Version='$(var.VersionNumber)' Manufacturer='!(loc.ManufacturerName)'>
+  <Product Id='*' Name='!(loc.ApplicationName) $(var.ApplicationVersion)' UpgradeCode='D7356AA8-4655-41C2-8849-1F840804D907'
+    Language='1033' Codepage='1252' Version='$(var.ApplicationVersion)' Manufacturer='!(loc.ManufacturerName)'>
 
     <Package Id='*' Keywords='Installer' Description='!(loc.ProductDescription)'
       Comments='!(loc.Comments)' Manufacturer='!(loc.ManufacturerName)'

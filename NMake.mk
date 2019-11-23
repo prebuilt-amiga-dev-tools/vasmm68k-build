@@ -43,7 +43,7 @@ package-wix:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vobjdump_win32.exe $(BUILD_RESULTS_DIR)/temp/vobjdump.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; & candle.exe wix/vasmm68k.wxs -o '$(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj' -arch x64 '-dVersionString=$(VASM_VERSION)' '-dVersionNumber=1.0'"
+	powershell -Command "$$ErrorActionPreference = 'Stop'; & candle.exe wix/vasmm68k.wxs -o '$(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj' -arch x64 '-dApplicationVersion=$(VASM_VERSION)'"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; light.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj -o '$(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION).msi' -loc wix/vasmm68k.wxl"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION).wixpdb"
