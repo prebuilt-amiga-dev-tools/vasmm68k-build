@@ -6,6 +6,9 @@
 /debian/debhelper-build-stamp
 /debian/files
 
+# Ignore intermediate files from Chocolatey package building process
+/choco/bin
+
 # Ignore build artifacts
 /build_results
 

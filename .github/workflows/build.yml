@@ -41,7 +41,7 @@ jobs:
         run: |
           .\set-msvc-path.ps1
           .\set-wix-path.ps1
-          if ((Start-Process nmake.exe -ArgumentList clean,download,build,package-binaries,package-wix -NoNewWindow -Wait -PassThru).ExitCode) { throw }
+          if ((Start-Process nmake.exe -ArgumentList clean,download,build,package-binaries,package-wix,package-choco -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: upload artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -107,4 +107,13 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ./windows-binaries/vasmm68k-${{ steps.branch_name.outputs.SOURCE_VERSION }}.msi
           asset_name: vasmm68k-${{ steps.branch_name.outputs.SOURCE_VERSION }}.msi
+          asset_content_type: application/octet-stream
+      - name: Upload windows Chocolatey package
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./windows-binaries/vasmm68k.${{ steps.branch_name.outputs.SOURCE_VERSION }}.nupkg
+          asset_name: vasmm68k.${{ steps.branch_name.outputs.SOURCE_VERSION }}.nupkg
           asset_content_type: application/octet-stream
