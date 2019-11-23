@@ -2,10 +2,7 @@
 
 include Config.mk
 
-# Import DISTRIBUTION variable from wrapper makefile
-include ConfigDistribution.mk
-
-PACKAGEVERSION = $(VASM_VERSION)_$(DISTRIBUTION)
+PACKAGEVERSION = $(VASM_VERSION)
 
 %:
 	dh $@
