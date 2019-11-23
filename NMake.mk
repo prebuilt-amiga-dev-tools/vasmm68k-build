@@ -49,6 +49,7 @@ package-wix:
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION).wixpdb"
 
 package-choco:
+	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path choco/bin) { Remove-Item -Force -Recurse choco/bin }"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force choco/bin"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe choco/bin/vasmm68k_mot.exe"
