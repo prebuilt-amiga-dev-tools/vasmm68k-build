@@ -121,5 +121,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.APT_PUBLISHER_TOKEN }}
+          repository: ${{ github.repository.split('/')[0] }}/apt
           event-type: add-deb-package
           client-payload: '{ "download_url": "https://github.com/amiga-ci-tools/vasmm68k/releases/download/releases%2F${{ steps.branch_name.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_name.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
