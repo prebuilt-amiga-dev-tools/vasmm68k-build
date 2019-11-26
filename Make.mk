@@ -23,6 +23,9 @@ package:
 	mkdir -p $(BUILD_RESULTS_DIR)
 	cp ../vasmm68k_$(VASM_VERSION)_amd64.deb $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
 
+release:
+	./release.sh $(VASM_VERSION)
+
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
 # easy local testing of a newly-built .deb package
