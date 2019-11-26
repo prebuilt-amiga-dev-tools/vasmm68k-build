@@ -32,7 +32,7 @@ BASE=$(git merge-base @ @{u})
 
 if [[ ${LOCAL} == ${REMOTE} ]]; then
 #    echo "Local and remote are in sync, release allowed."
-if [[ ${LOCAL} = ${BASE} ]]; then
+elif [[ ${LOCAL} = ${BASE} ]]; then
     echo "There are incoming changes. Cannot create release."
     exit 1
 elif [[ ${REMOTE} = ${BASE} ]]; then
