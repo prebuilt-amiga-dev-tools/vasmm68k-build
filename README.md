@@ -20,7 +20,7 @@ Download a windows-binaries package from the [releases](https://github.com/amiga
 First, add the Apt repository to your list of default repos:
 
 ```
-sudo echo "deb https://amiga-ci-tools.github.io/apt/ stable main" | sudo tee /etc/apt/sources.list.d/amiga-ci-tools.list
+sudo echo "deb https://amiga-ci-tools.github.io/apt/ xenial main" | sudo tee /etc/apt/sources.list.d/amiga-ci-tools.list
 wget http://amiga-ci-tools.github.io/apt/PUBLIC.KEY -O - | sudo apt-key add -
 ```
 
@@ -28,3 +28,7 @@ Then, install vasmm68k:
 ```
 sudo apt-get update && apt-get install vasmm68k
 ```
+
+# Development
+
+Check out the [development manual](DEVELOPMENT.md).
