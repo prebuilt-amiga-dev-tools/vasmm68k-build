@@ -7,9 +7,13 @@ VASMDIR=vasm
 
 BUILD_RESULTS_DIR = build_results
 
-default: clean download build package-binaries package-wix package-choco test-binaries test-wix test-choco
+default: clean download build package test-packages
 
-.PHONY: clean download build
+package: package-binaries package-wix package-choco
+
+test-packages: test-binaries test-wix test-choco
+
+.PHONY: clean download build package test-package
 .PHONY: package-binaries package-wix package-choco
 .PHONY: test-binaries test-wix test-choco
 
