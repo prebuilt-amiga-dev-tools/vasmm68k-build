@@ -1,0 +1,25 @@
+
+------------------------------------------------------------------------------
+VOBJ M68k (big endian), 8 bits per byte, 4 bytes per word.
+3 symbols.
+2 sections.
+
+------------------------------------------------------------------------------
+00000030: SECTION "code" (attributes="acrx")
+Flags: 1         Alignment: 2      Total size: 4         File size: 4        
+
+------------------------------------------------------------------------------
+00000043: SECTION "data" (attributes="adrw")
+Flags: 0         Alignment: 1      Total size: 4         File size: 4        
+1 Relocation present.
+
+file offs sectoffs pos sz mask     type     symbol+addend
+00000056: 00000000  00 32 ffffffff ABS      main+0
+
+
+------------------------------------------------------------------------------
+SYMBOL TABLE
+file offs bind size     type def      value    name
+0000000e: LOCL 00000000 sect     code        0 code
+00000018: LOCL 00000000 sect     data        0 data
+00000022: LOCL 00000000          code        0 main

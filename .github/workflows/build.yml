@@ -41,7 +41,7 @@ jobs:
         run: |
           .\set-msvc-path.ps1
           .\set-wix-path.ps1
-          if ((Start-Process nmake.exe -ArgumentList clean,download,build,package-binaries,package-wix,package-choco -NoNewWindow -Wait -PassThru).ExitCode) { throw }
+          if ((Start-Process nmake.exe -ArgumentList clean,download,build,package-binaries,package-wix,package-choco,test-binaries,test-wix,test-choco -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: upload artifacts
         uses: actions/upload-artifact@v1
         with:
