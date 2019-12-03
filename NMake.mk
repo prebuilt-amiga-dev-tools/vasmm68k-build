@@ -21,7 +21,6 @@ clean:
 	powershell -Command "gcm get-file*"
 	powershell -Command "Get-ChildItem Env:"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; (Get-FileHash 'tests/test_mot.o.expected').Hash"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (((Get-FileHash 'tests/test_mot.o.expected').hash) -ne ((Get-FileHash '$(BUILD_RESULTS_DIR)/temp/test_mot.o').hash)) { throw 'vasmm68k_mot output does not match reference' }"
 
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(VASMDIR)) { Remove-Item -Recurse -Force $(VASMDIR) }"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path vasm.tar.gz) { Remove-Item -Recurse -Force vasm.tar.gz }"
