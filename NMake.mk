@@ -18,9 +18,8 @@ test-packages: test-binaries test-wix test-choco
 .PHONY: test-binaries test-wix test-choco
 
 clean:
-	powershell -Command "gcm get-file*"
-	powershell -Command "Get-ChildItem Env:"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; (Get-FileHash 'tests/test_mot.o.expected').Hash"
+	powershell -Command "(Get-Command -Module Microsoft.Powershell.Utility).Name"
+	powershell -Command "Get-FileHash README.md"
 
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(VASMDIR)) { Remove-Item -Recurse -Force $(VASMDIR) }"
 	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path vasm.tar.gz) { Remove-Item -Recurse -Force vasm.tar.gz }"
