@@ -18,7 +18,6 @@ test-packages: test-binaries test-wix test-choco
 .PHONY: test-binaries test-wix test-choco
 
 clean:
-	powershell -Command "$$Env:PSModulePath -split ';'"
 	powershell -Command "(Get-Command -Module Microsoft.Powershell.Utility).Name"
 	powershell -Command "Get-FileHash README.md"
 

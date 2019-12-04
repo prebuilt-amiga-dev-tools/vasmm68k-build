@@ -39,6 +39,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: build executables
         run: |
+          $Env:PSModulePath -split ';'
           .\set-msvc-path.ps1
           .\set-wix-path.ps1
           Import-Module Microsoft.Powershell.Utility
