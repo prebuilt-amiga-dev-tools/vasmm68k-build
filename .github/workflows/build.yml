@@ -38,11 +38,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: build executables
+        shell: powershell
         run: |
-          $Env:PSModulePath -split ';'
           .\set-msvc-path.ps1
           .\set-wix-path.ps1
-          Import-Module Microsoft.Powershell.Utility
           if ((Start-Process nmake.exe -ArgumentList clean,download,build,package,test-packages -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: upload artifacts
         uses: actions/upload-artifact@v1
