@@ -7,53 +7,39 @@ VASMDIR=vasm
 
 BUILD_RESULTS_DIR = build_results
 
-default: clean download build package-binaries package-wix package-choco
+default: clean download build package test-packages
 
-.PHONY: clean download build package-binaries package-wix package-choco
+package: package-binaries package-wix package-choco
+
+test-packages: test-binaries test-wix test-choco
+
+.PHONY: clean download build package test-package
+.PHONY: package-binaries package-wix package-choco
+.PHONY: test-binaries test-wix test-choco
 
 clean:
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(VASMDIR)) { Remove-Item -Recurse -Force $(VASMDIR) }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path vasm.tar.gz) { Remove-Item -Recurse -Force vasm.tar.gz }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)) { Remove-Item -Recurse -Force $(BUILD_RESULTS_DIR) }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path choco/bin) { Remove-Item -Recurse -Force choco/bin }"
+	powershell -File scripts/windows/clean.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)"
 
 download:
- 	powershell -Command "$$ErrorActionPreference = 'Stop'; Invoke-WebRequest -Uri $(VASM_URL) -OutFile vasm.tar.gz"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; tar -xvf vasm.tar.gz"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item vasm.tar.gz"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item Makefile.Win32 vasm"
+	powershell scripts/windows/download.ps1 -VASM_URL "$(VASM_URL)"
 
 build:
-	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(VASMDIR)/obj_win32"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.Win32 CPU=m68k SYNTAX=mot; if ($$LASTEXITCODE -ne 0) { throw }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; cd $(VASMDIR); nmake /F makefile.win32 CPU=m68k SYNTAX=std; if ($$LASTEXITCODE -ne 0) { throw }"
+	powershell scripts/windows/build.ps1 -VASMDIR "$(VASMDIR)"
 
 package-binaries:
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/temp) { Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)/temp"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vobjdump_win32.exe $(BUILD_RESULTS_DIR)/temp/vobjdump.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Compress-Archive -Path '$(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe', '$(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe', '$(BUILD_RESULTS_DIR)/temp/vobjdump.exe' -DestinationPath $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-binaries.zip"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp"
+	powershell scripts/windows/package-binaries.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
 
 package-wix:
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path $(BUILD_RESULTS_DIR)/temp) { Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)/temp"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_mot.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k_std.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vobjdump_win32.exe $(BUILD_RESULTS_DIR)/temp/vobjdump.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; & candle.exe wix/vasmm68k.wxs -o '$(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj' -arch x64 '-dApplicationVersion=$(VASM_VERSION)'"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; light.exe $(BUILD_RESULTS_DIR)/temp/vasmm68k.wixobj -o '$(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-installer.msi' -loc wix/vasmm68k.wxl"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/temp"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse $(BUILD_RESULTS_DIR)/vasmm68k-$(VASM_VERSION)-windows-installer.wixpdb"
+	powershell scripts/windows/package-wix.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
 
 package-choco:
-	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force $(BUILD_RESULTS_DIR)"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; if (Test-Path choco/bin) { Remove-Item -Force -Recurse choco/bin }"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; mkdir -Force choco/bin"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_mot_win32.exe choco/bin/vasmm68k_mot.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vasmm68k_std_win32.exe choco/bin/vasmm68k_std.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Copy-Item $(VASMDIR)/vobjdump_win32.exe choco/bin/vobjdump.exe"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; choco.exe pack choco/vasmm68k.nuspec --out $(BUILD_RESULTS_DIR) --properties version=$(VASM_VERSION)"
-	powershell -Command "$$ErrorActionPreference = 'Stop'; Remove-Item -Force -Recurse choco/bin"
+	powershell scripts/windows/package-choco.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+
+test-binaries:
+	powershell scripts/windows/test-binaries.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+
+test-wix:
+	powershell scripts/windows/test-wix.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+
+test-choco:
+	powershell scripts/windows/test-choco.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
