@@ -8,16 +8,12 @@ PACKAGEVERSION = $(VASM_VERSION)
 	dh $@
 
 override_dh_auto_clean:
-	make clean
-	make download
 
 override_dh_auto_build:
-	make build
 
-#override_dh_auto_test:
-#
+override_dh_auto_test:
+
 #override_dh_auto_install:
-#	make install
 
 override_dh_gencontrol:
 	dh_gencontrol -- -v$(PACKAGEVERSION)
