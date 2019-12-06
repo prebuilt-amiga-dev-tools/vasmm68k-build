@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+
+include ../Config.mk
+
+PACKAGEVERSION = $(VASM_VERSION)
+
+DESTDIR=debian/vasmm68k
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+
+override_dh_auto_build:
+
+override_dh_auto_test:
+
+override_dh_auto_install:
+	mkdir -p $(DESTDIR)/usr/bin
+
+	cp ../vasm/vasmm68k_mot $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_mot
+
+	cp ../vasm/vasmm68k_std $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_std
+
+	cp ../vasm/vobjdump $(DESTDIR)/usr/bin/
+	chmod ugo+rx $(DESTDIR)/usr/bin/vobjdump
+
+override_dh_gencontrol:
+	dh_gencontrol -- -v$(PACKAGEVERSION)

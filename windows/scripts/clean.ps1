@@ -19,6 +19,6 @@ if (Test-Path ${BUILD_RESULTS_DIR})
     Remove-Item -ErrorAction Stop -Recurse -Force "${BUILD_RESULTS_DIR}"
 }
 
-if (Test-Path choco/bin) {
-    Remove-Item -ErrorAction Stop -Recurse -Force choco/bin
+if (Test-Path windows/choco/bin) {
+    Remove-Item -ErrorAction Stop -Recurse -Force windows/choco/bin
 }

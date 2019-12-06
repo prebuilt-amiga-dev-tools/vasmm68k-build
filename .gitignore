@@ -5,6 +5,7 @@
 /debian/vasmm68k*
 /debian/debhelper-build-stamp
 /debian/files
+/vasmm68k_*
 
 # Ignore intermediate files from Chocolatey package building process
 /choco/bin
