@@ -4,9 +4,9 @@
 # \
 !ifndef 0 # \
 # NMAKE code here \
-!include NMake.mk # \
+!include Windows/NMake.mk # \
 !else
 # Make code here
-include Make.mk
+include linux/Make.mk
 # \
 !endif

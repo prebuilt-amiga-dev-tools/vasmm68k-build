@@ -22,6 +22,7 @@ clean:
 	rm -rf vasm
 	rm -f vasm.tar.gz
 	rm -rf $(BUILD_RESULTS_DIR)
+	rm -f vasmm68k_*
 
 download:
 	wget -O vasm.tar.gz $(VASM_URL)
@@ -35,9 +36,10 @@ build:
 package: package-deb
 
 package-deb:
-	sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc
+	(cd linux && sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc)
 	mkdir -p $(BUILD_RESULTS_DIR)
-	cp ../vasmm68k_$(VASM_VERSION)_amd64.deb $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
+	cp vasmm68k_$(VASM_VERSION)_amd64.deb $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
+	rm -f vasmm68k_*
 
 test: test-deb
 
@@ -55,7 +57,7 @@ test-deb:
 	sudo dpkg -r vasmm68k
 
 release:
-	./release.sh $(VASM_VERSION)
+	./linux/scripts/release.sh $(VASM_VERSION)
 
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
@@ -66,19 +68,3 @@ install-deb:
 
 remove-deb:
 	sudo dpkg -r vasmm68k
-
-######################################################################################
-# These build steps will be invoked by the 'debuild' tool; they are referenced in the debian/rules file
-# They can also be invoked manually with make
-
-install:
-	mkdir -p $(DESTDIR)/usr/bin
-
-	cp vasm/vasmm68k_mot $(DESTDIR)/usr/bin/
-	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_mot
-
-	cp vasm/vasmm68k_std $(DESTDIR)/usr/bin/
-	chmod ugo+rx $(DESTDIR)/usr/bin/vasmm68k_std
-
-	cp vasm/vobjdump $(DESTDIR)/usr/bin/
-	chmod ugo+rx $(DESTDIR)/usr/bin/vobjdump

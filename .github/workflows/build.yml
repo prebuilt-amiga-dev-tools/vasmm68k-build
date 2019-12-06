@@ -45,18 +45,18 @@ jobs:
       - name: Build executables
         shell: powershell
         run: |
-          .\scripts\windows\set-msvc-path.ps1
+          .\windows\scripts\set-msvc-path.ps1
           if ((Start-Process nmake.exe -ArgumentList clean,download,build -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Create packages
         shell: powershell
         run: |
-          .\scripts\windows\set-msvc-path.ps1
-          .\scripts\windows\set-wix-path.ps1
+          .\windows\scripts\set-msvc-path.ps1
+          .\windows\scripts\set-wix-path.ps1
           if ((Start-Process nmake.exe -ArgumentList package -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Test packages
         shell: powershell
         run: |
-          .\scripts\windows\set-msvc-path.ps1
+          .\windows\scripts\set-msvc-path.ps1
           if ((Start-Process nmake.exe -ArgumentList test-packages -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
