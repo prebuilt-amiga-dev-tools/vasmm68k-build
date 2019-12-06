@@ -2,13 +2,13 @@
 /vasm
 
 # Ignore intermediate files from .deb package building process
-/debian/vasmm68k*
-/debian/debhelper-build-stamp
-/debian/files
+/linux/debian/vasmm68k*
+/linux/debian/debhelper-build-stamp
+/linux/debian/files
 /vasmm68k_*
 
 # Ignore intermediate files from Chocolatey package building process
-/choco/bin
+/windows/choco/bin
 
 # Ignore build artifacts
 /build_results
