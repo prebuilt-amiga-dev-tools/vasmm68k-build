@@ -51,8 +51,8 @@
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='$(var.PlatformProgramFilesFolder)'>
-        <Directory Id='INSTALLDIR' Name='amiga-ci-tools'>
-          <Directory Id='bin' Name='bin'>
+        <Directory Id='ORGANIZATIONDIR' Name='amiga-ci-tools'>
+          <Directory Id='INSTALLDIR' Name='vasmm68k'>
 
             <Component Id='vasmm68k_mot_executable' Guid='14482F4F-EACB-4162-AAB3-397A9926B450' Win64='$(var.Win64)'>
               <File Id='vasmm68k_mot' Name='vasmm68k_mot.exe' DiskId='1' Source='vasmm68k_mot.exe' KeyPath='yes'/>
@@ -71,7 +71,7 @@
       </Directory>
 
       <Component Id='Path' Guid='dca16934-559b-420b-bb89-84b3b67042ee'>
-        <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]\bin' Permanent='no' Part='last' Action='set' System='no' />
+        <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]' Permanent='no' Part='last' Action='set' System='no' />
       </Component>
 
       <!-- Registry entries -->
