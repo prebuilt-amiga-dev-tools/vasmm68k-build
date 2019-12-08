@@ -21,7 +21,7 @@ clean:
 	powershell -File windows/scripts/clean.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)"
 
 download:
-	powershell windows/scripts/download.ps1 -VASM_URL "$(VASM_URL)"
+	powershell windows/scripts/download.ps1 -VASM_URL "$(VASM_URL)" -VASM_DOC_URL "$(VASM_DOC_URL)"
 
 build:
 	powershell windows/scripts/build.ps1 -VASMDIR "$(VASMDIR)"
