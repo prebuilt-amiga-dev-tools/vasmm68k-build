@@ -32,6 +32,11 @@
      <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
     <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
 
+    <!-- Upgrade logic -->
+    <!-- Always upgrade/downgrade, never allow two versions to be installed next to each other -->
+    <!-- AllowSameVersionUpgrades (which is implicitly set when AllowDowngrades is set) causes ICE61 which must be ignored when invoking light.exe -->
+    <MajorUpgrade AllowDowngrades="yes" />
+
     <!-- This is the main installer sequence run when the product is actually installed -->
     <InstallExecuteSequence>
     
