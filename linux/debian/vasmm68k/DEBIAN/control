@@ -1,9 +1,0 @@
-Package: vasmm68k
-Source: vasmm68k (0.0-0)
-Version: 1.8.6
-Architecture: amd64
-Maintainer: Username <user@email.com>
-Installed-Size: 731
-Section: development
-Priority: optional
-Description: vasm (m68k) assembler thingy

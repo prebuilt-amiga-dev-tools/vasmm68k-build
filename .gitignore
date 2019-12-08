@@ -2,7 +2,7 @@
 /vasm
 
 # Ignore intermediate files from .deb package building process
-/linux/debian/vasmm68k*
+/linux/debian/vasmm68k
 /linux/debian/debhelper-build-stamp
 /linux/debian/files
 /vasmm68k_*
