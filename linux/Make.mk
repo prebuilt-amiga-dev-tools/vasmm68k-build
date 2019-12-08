@@ -29,6 +29,8 @@ download:
 	tar -xvf vasm.tar.gz
 	rm vasm.tar.gz
 
+	wget -O vasm/vasm.pdf $(VASM_DOC_URL)
+
 build:
 	(cd vasm && make CPU=m68k SYNTAX=mot && chmod ugo+rx vasmm68k_mot)
 	(cd vasm && make CPU=m68k SYNTAX=std && chmod ugo+rx vasmm68k_std)
