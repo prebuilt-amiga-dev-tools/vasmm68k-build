@@ -119,6 +119,8 @@
       -->
     <UIRef Id="WixUI_InstallDir" />
 
+    <WixVariable Id="WixUILicenseRtf" Value="windows/wix/license.rtf" />
+
     <Feature Id='Complete' Level='1' Title="!(loc.FeatureMainProgramTitle)" Description="!(loc.FeatureMainProgramDescription)">
       <ComponentRef Id='vasmm68k_mot_executable' />
       <ComponentRef Id='vasmm68k_std_executable' />
