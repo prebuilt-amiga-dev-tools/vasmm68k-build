@@ -70,6 +70,10 @@
               <File Id='vobjdump' Name='vobjdump.exe' DiskId='1' Source='vobjdump.exe' KeyPath='yes'/>
             </Component>
 
+            <Component Id='vasm_manual' Guid='4059F158-4F9B-4912-4420-FC0514E99174' Win64='$(var.Win64)'>
+              <File Id='vasm_pdf' Name='vasm.pdf' DiskId='1' Source='vasm.pdf' KeyPath='yes'/>
+            </Component>
+
           </Directory>
         </Directory>
       </Directory>
@@ -130,6 +134,7 @@
       <ComponentRef Id='vasmm68k_mot_executable' />
       <ComponentRef Id='vasmm68k_std_executable' />
       <ComponentRef Id='vobjdump_executable' />
+      <ComponentRef Id='vasm_manual' />
       <ComponentRef Id='RegValInstallLocation_comp' />
       <ComponentRef Id='Path' />
     </Feature>
