@@ -28,7 +28,6 @@
     <!-- Set properties for add/remove programs -->
     <Property Id="ARPHELPLINK" Value="$(var.InfoURL)" />
     <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
-    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />      <!-- Remove modify -->
 
      <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
     <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
@@ -84,6 +83,41 @@
       </Component>
 
     </Directory>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <!-- Activate built-in UI flow:
+
+      If not installed:
+
+          "Hi and welcome to application X"
+
+          "<License agreement>"
+          "[X] I agree to the license agreement"
+
+          "Change install location"
+          "<default install location pre-populated; can be changed with file selector>"
+
+          "Click Install to proceed with installation"
+
+          "<... progress bar ...>"
+
+          "Installer complete"
+
+      If installed:
+
+          "Hi and welcome to application X"
+
+          "[Change - grayed out]"
+          "[Repair - grayed out]"
+          "[Remove]"
+
+          "Click Remove to proceed with uninstallation"
+
+          "<... progress bar ...>"
+
+          "Installer complete"
+      -->
+    <UIRef Id="WixUI_InstallDir" />
 
     <Feature Id='Complete' Level='1' Title="!(loc.FeatureMainProgramTitle)" Description="!(loc.FeatureMainProgramDescription)">
       <ComponentRef Id='vasmm68k_mot_executable' />
