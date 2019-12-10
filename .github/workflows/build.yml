@@ -146,4 +146,4 @@ jobs:
           token: ${{ secrets.APT_PUBLISHER_TOKEN }}
           repository: ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/apt
           event-type: add-deb-package
-          client-payload: '{ "download_url": "https://github.com/amiga-ci-tools/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
+          client-payload: '{ "download_url": "https://github.com/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
