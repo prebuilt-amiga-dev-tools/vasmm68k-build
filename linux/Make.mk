@@ -13,7 +13,7 @@ BUILD_RESULTS_DIR = build_results
 
 default: clean download build package test
 
-.PHONY: install test-deb install-deb remove-deb release
+.PHONY: install test-deb install-deb remove-deb extract-changelog release
 
 ######################################################################################
 # These build steps are intended to be invoked manually with make
@@ -57,6 +57,9 @@ test-deb:
 	rm -rf $(BUILD_RESULTS_DIR)/temp
 
 	sudo dpkg -r vasmm68k
+
+extract-changelog:
+	./linux/scripts/extract-changelog.sh $(VASM_VERSION)
 
 release:
 	./linux/scripts/release.sh $(VASM_VERSION)
