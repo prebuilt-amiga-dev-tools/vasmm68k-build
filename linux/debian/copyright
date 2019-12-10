@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: vasmm68k
-Source: https://github.com/amiga-ci-tools/vasmm68k
+Source: https://github.com/prebuilt-amiga-dev-tools/vasmm68k
 
 Files: *
 Copyright: 2002-2019 Volker Barthelmann

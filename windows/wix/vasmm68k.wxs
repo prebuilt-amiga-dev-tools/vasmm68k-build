@@ -2,7 +2,7 @@
 
 <!-- This installer is largely based on https://helgeklein.com/blog/2014/09/real-world-example-wix-msi-application-installer/ -->
 
-<?define InfoURL="https://github.com/amiga-ci-tools/vasmm68k/" ?>
+<?define InfoURL="https://github.com/$(var.GithubOrganizationName)/vasmm68k/" ?>
 
 <!-- 32-bit / 64-bit variables -->
 <?if $(sys.BUILDARCH) = "x86"?>
@@ -55,7 +55,7 @@
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='$(var.PlatformProgramFilesFolder)'>
-        <Directory Id='ORGANIZATIONDIR' Name='amiga-ci-tools'>
+        <Directory Id='ORGANIZATIONDIR' Name='$(var.GithubOrganizationName)'>
           <Directory Id='INSTALLDIR' Name='vasmm68k'>
 
             <Component Id='vasmm68k_mot_executable' Guid='14482F4F-EACB-4162-AAB3-397A9926B450' Win64='$(var.Win64)'>

@@ -37,7 +37,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <title>vasmm68k (Install)</title>
     <authors>__REPLACE_AUTHORS_OF_SOFTWARE_COMMA_SEPARATED__</authors>
     <!-- projectUrl is required for the community feed -->
-    <projectUrl>https://github.com/amiga-ci-tools/vasmm68k</projectUrl>
+    <projectUrl>https://github.com/$github_organization_name$/vasmm68k</projectUrl>
     <!--<iconUrl>http://cdn.rawgit.com/__REPLACE_YOUR_REPO__/master/icons/vasmm68k-auto.png</iconUrl>-->
     <!-- <copyright>Year Software Vendor</copyright> -->
     <!-- If there is a license Url available, it is required for the community feed -->

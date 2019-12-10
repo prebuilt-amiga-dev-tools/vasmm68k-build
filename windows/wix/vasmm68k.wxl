@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
   <String Id="ApplicationName">vasmm68k</String>
-  <String Id="ManufacturerName">amiga-ci-tools on GitHub</String>
-  <String Id="ProductDescription">Acme's Foobar 1.0 Installer</String>
-  <String Id="Comments">'Foobar is a registered trademark of Acme Ltd.'</String>
-  <String Id="FeatureMainProgramTitle">Feature Main Program Title</String>
-  <String Id="FeatureMainProgramDescription">Feature Main Program Description</String>
+  <String Id="ManufacturerName">Volker Barthelmann</String>
+  <String Id="ProductDescription">Installer for vasm targetting m68k</String>
+  <String Id="Comments">vasm is copyright in 2002-2019 by Volker Barthelmann.</String>
+  <String Id="FeatureMainProgramTitle">vasmm68k</String>
+  <String Id="FeatureMainProgramDescription">All vasmm68k components</String>
 </WixLocalization>

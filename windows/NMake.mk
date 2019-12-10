@@ -7,6 +7,8 @@ VASMDIR=vasm
 
 BUILD_RESULTS_DIR = build_results
 
+GITHUB_ORGANIZATION_NAME = prebuilt-amiga-dev-tools
+
 default: clean download build package test-packages
 
 package: package-binaries package-wix package-choco
@@ -30,16 +32,16 @@ package-binaries:
 	powershell windows/scripts/package-binaries.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
 
 package-wix:
-	powershell windows/scripts/package-wix.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+	powershell windows/scripts/package-wix.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -GITHUB_ORGANIZATION_NAME "$(GITHUB_ORGANIZATION_NAME)" -VASM_VERSION "$(VASM_VERSION)"
 
 package-choco:
-	powershell windows/scripts/package-choco.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+	powershell windows/scripts/package-choco.ps1 -VASMDIR "$(VASMDIR)" -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -GITHUB_ORGANIZATION_NAME "$(GITHUB_ORGANIZATION_NAME)" -VASM_VERSION "$(VASM_VERSION)"
 
 test-binaries:
 	powershell windows/scripts/test-binaries.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
 
 test-wix:
-	powershell windows/scripts/test-wix.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
+	powershell windows/scripts/test-wix.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -GITHUB_ORGANIZATION_NAME "$(GITHUB_ORGANIZATION_NAME)" -VASM_VERSION "$(VASM_VERSION)"
 
 test-choco:
 	powershell windows/scripts/test-choco.ps1 -BUILD_RESULTS_DIR "$(BUILD_RESULTS_DIR)" -VASM_VERSION "$(VASM_VERSION)"
