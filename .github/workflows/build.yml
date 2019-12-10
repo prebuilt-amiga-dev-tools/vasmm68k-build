@@ -29,10 +29,12 @@ jobs:
         run: DISTRIBUTION=xenial make package
       - name: Test packages
         run: DISTRIBUTION=xenial make test
+      - name: Extract changelog
+        run: make extract-changelog
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: linux-deb-package
+          name: linux-artifacts
           path: build_results
 
   build-windows:
@@ -61,7 +63,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: windows-binaries
+          name: windows-artifacts
           path: build_results
 
   release:
@@ -80,14 +82,17 @@ jobs:
           echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
           echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
-      - name: Download linux-deb-package
+      - name: Download linux-artifacts
         uses: actions/download-artifact@v1
         with:
-          name: linux-deb-package
-      - name: Download windows-binaries
+          name: linux-artifacts
+      - name: Download windows-artifacts
         uses: actions/download-artifact@v1
         with:
-          name: windows-binaries
+          name: windows-artifacts
+      - name: Parse changelog
+        id: parse_changelog
+        run: echo ::set-output name=CHANGELOG_FOR_VERSION::'`cat linux-artifacts/changelog-for-version`'
       - name: Create release
         id: create_release
         uses: actions/create-release@v1.0.0
@@ -98,13 +103,14 @@ jobs:
           release_name: ${{ steps.branch_info.outputs.SOURCE_VERSION }}
           draft: false
           prerelease: false
+          body: ${{ steps.parse_changelog.outputs.CHANGELOG_FOR_VERSION }}
       - name: Upload linux-deb-package
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./linux-deb-package/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb
+          asset_path: ./linux-artifacts/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb
           asset_name: vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb
           asset_content_type: application/gzip
       - name: Upload windows-binaries
@@ -113,7 +119,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./windows-binaries/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip
+          asset_path: ./windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip
           asset_name: vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip
           asset_content_type: application/zip
       - name: Upload windows installer
@@ -122,7 +128,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./windows-binaries/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi
+          asset_path: ./windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi
           asset_name: vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi
           asset_content_type: application/octet-stream
       
