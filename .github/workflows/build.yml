@@ -96,7 +96,7 @@ jobs:
         with:
           name: ${{ steps.branch_info.outputs.SOURCE_VERSION }}
           draft: false
-          bodyFile: linux-artifacts/changelog-for-version
+          bodyFile: linux-artifacts/changelog-for-version.md
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "linux-artifacts/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi"
       
