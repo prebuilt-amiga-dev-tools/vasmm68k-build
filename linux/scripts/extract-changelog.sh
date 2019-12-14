@@ -1,6 +1,11 @@
 #!/bin/bash
 
-VASM_VERSION=$1
+if [ $# -ne 1 ]; then
+  echo 1>&2 "Usage: $0 VASM_VERSION"
+  exit 1
+fi
+
+VASM_VERSION="$1"
 
 ######################################################################################
 

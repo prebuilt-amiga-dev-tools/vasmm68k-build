@@ -19,57 +19,36 @@ default: clean download build package test
 # These build steps are intended to be invoked manually with make
 
 clean:
-	rm -rf vasm
-	rm -f vasm.tar.gz
-	rm -rf $(BUILD_RESULTS_DIR)
-	rm -f vasmm68k_*
+	./linux/scripts/clean.sh "$(BUILD_RESULTS_DIR)"
 
 download:
-	wget -O vasm.tar.gz $(VASM_URL)
-	tar -xvf vasm.tar.gz
-	rm vasm.tar.gz
-
-	wget -O vasm/vasm.pdf $(VASM_DOC_URL)
+	./linux/scripts/download.sh "$(VASM_URL)" "$(VASM_DOC_URL)"
 
 build:
-	(cd vasm && make CPU=m68k SYNTAX=mot && chmod ugo+rx vasmm68k_mot)
-	(cd vasm && make CPU=m68k SYNTAX=std && chmod ugo+rx vasmm68k_std)
+	./linux/scripts/build.sh
 
 package: package-deb
 
 package-deb:
-	(cd linux && sudo DEBUILD_DPKG_BUILDPACKAGE_OPTS="-r'fakeroot --faked faked-tcp' -us -uc" DEBUILD_LINTIAN_OPTS="-i -I --show-overrides" debuild --no-conf -us -uc)
-	mkdir -p $(BUILD_RESULTS_DIR)
-	cp vasmm68k_$(VASM_VERSION)_amd64.deb $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
-	rm -f vasmm68k_*
+	./linux/scripts/package-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)" "$(DISTRIBUTION)"
 
 test: test-deb
 
 test-deb:
-	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
-
-	mkdir -p $(BUILD_RESULTS_DIR)/temp
-
-	vasmm68k_mot -Fhunk -o $(BUILD_RESULTS_DIR)/temp/test_mot.o tests/test_mot.s && cmp tests/test_mot.o.expected $(BUILD_RESULTS_DIR)/temp/test_mot.o || exit 1
-	vasmm68k_std -Fhunk -o $(BUILD_RESULTS_DIR)/temp/test_std.o tests/test_std.s && cmp tests/test_std.o.expected $(BUILD_RESULTS_DIR)/temp/test_std.o || exit 1
-	vobjdump tests/test_vobjdump.o > $(BUILD_RESULTS_DIR)/temp/test_vobjdump.dis && cmp tests/test_vobjdump.dis.expected $(BUILD_RESULTS_DIR)/temp/test_vobjdump.dis || exit 1
-
-	rm -rf $(BUILD_RESULTS_DIR)/temp
-
-	sudo dpkg -r vasmm68k
+	./linux/scripts/test-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)" "$(DISTRIBUTION)"
 
 extract-changelog:
-	./linux/scripts/extract-changelog.sh $(VASM_VERSION)
+	./linux/scripts/extract-changelog.sh "$(VASM_VERSION)"
 
 release:
-	./linux/scripts/release.sh $(VASM_VERSION)
+	./linux/scripts/release.sh "$(VASM_VERSION)"
 
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
 # easy local testing of a newly-built .deb package
 
 install-deb:
-	sudo dpkg -i $(BUILD_RESULTS_DIR)/vasmm68k_$(VASM_VERSION)_amd64.$(DISTRIBUTION).deb
+	./linux/scripts/install-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_DVERSION)" "$(DISTRIBUTION)"
 
 remove-deb:
-	sudo dpkg -r vasmm68k
+	./linux/scripts/remove-deb.sh
