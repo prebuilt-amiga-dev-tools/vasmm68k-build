@@ -39,8 +39,8 @@ function convert-text-to-markdown() {
 # Into this:
 #
 # # 1.8f (2019.02.14)
-# - The latest version \[v1.8f\] marks the 10 year anniversary \\o/
-# - It is a a \<\<\< very \>\>\> marked improvement
+# * The latest version \[v1.8f\] marks the 10 year anniversary \\o/
+# * It is a a \<\<\< very \>\>\> marked improvement
 
     sed "s/^- /# /g"                | # Translate dashes to heading markers
     sed "s/^o /* /g"                | # Translate 'o' into bullet markers
