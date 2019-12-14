@@ -3,9 +3,17 @@
 
 ![](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/workflows/Build/badge.svg)
 
+This repository provides pre-built binary Linux & Windows versions of vasm for m68k target.
+
+See [the official vasm website](http://sun.hasenbraten.de/vasm) for more information on vasm.
+
+# Legal
+
+See [LICENSE.md](LICENSE.md).
+
 # Windows users
 
-There are two distributions for Windows users; an installr package, and a raw set of binaries.
+There are two distributions for Windows users; an installer package, and a raw set of binaries.
 
 ## Run installer
 
