@@ -1,0 +1,39 @@
+
+name: Trigger Release
+
+# This trigger updates the repo's configuration new download URLs and version number,
+#   and then starts the build + release process.
+#
+# Syntax for invoking this trigger:
+#
+# USERNAME=<name> PERSONAL_ACCESS_TOKEN=<token> \
+# ORGANIZATION=<org> REPOSITORY=<repo>
+# VASM_URL=<source code URL> VASM_DOC_URL=<doc url> VASM_VERSION=<version> \
+# bash -c 'curl -XPOST -u $USERNAME:$PERSONAL_ACCESS_TOKEN \
+#    -H "Accept: application/vnd.github.everest-preview+json" \
+#    -H "Content-Type: application/json" \
+#    "https://api.github.com/repos/$ORGANIZATION/$REPOSITORY/dispatches" \
+#    --data "{\"event_type\" : \"update-config-and-publish-release\", \
+#             \"client_payload\" : { \"vasm_url\" : \"$VASM_URL\", \
+#                                    \"vasm_doc_url\" : \"$VASM_DOC_URL\", \
+#                                    \"vasm_version\" : \"$VASM_VERSION\" } }"'
+
+on:
+  repository_dispatch:
+    types: [update-config-and-publish-release]
+
+jobs:
+  update-config-and-publish-release:
+    name: Update config and publish release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Use a different token than GITHUB_TOKEN for accessing the repository
+          # The non-default token will make the push operations trigger new workflow runs in build.yml
+          token: "${{ secrets.THIS_REPO_RELEASE_TOKEN }}"
+      - name: Update config
+        run: NEW_VASM_URL=${{ github.event.client_payload.vasm_url }} NEW_VASM_DOC_URL=${{ github.event.client_payload.vasm_doc_url }} NEW_VASM_VERSION=${{ github.event.client_payload.vasm_version }} make update-config
+      - name: Trigger new release
+        run: NEW_VASM_VERSION=${{ github.event.client_payload.vasm_version }} make release
