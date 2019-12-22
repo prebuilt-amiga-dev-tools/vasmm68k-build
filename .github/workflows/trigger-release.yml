@@ -19,7 +19,7 @@ name: Trigger Release
 #                                    \"vasm_version\" : \"$VASM_VERSION\" } }"'
 
 on:
-  repository-dispatch:
+  repository_dispatch:
     types: [update-config-and-publish-release]
 
 jobs:
