@@ -7,6 +7,23 @@ ifeq ($(strip $(DISTRIBUTION)),)
 DISTRIBUTION := unknown
 endif
 
+# Ensure that VASM_URL, VASM_DOC_URL and VASM_VERSION can be overridden
+#  through the use of NEW_xxx environment variables.
+# These variables are used when calling 'make update-config'.
+
+ifneq ($(strip $(NEW_VASM_URL)),)
+VASM_URL = $(NEW_VASM_URL)
+endif
+
+ifneq ($(strip $(NEW_VASM_DOC_URL)),)
+VASM_DOC_URL = $(NEW_VASM_DOC_URL)
+endif
+
+ifneq ($(strip $(NEW_VASM_VERSION)),)
+VASM_VERSION = $(NEW_VASM_VERSION)
+endif
+
+
 BUILD_RESULTS_DIR = build_results
 
 .PHONY: clean download build package test
@@ -40,9 +57,6 @@ test-deb:
 extract-changelog:
 	./linux/scripts/extract-changelog.sh "$(VASM_VERSION)"
 
-release:
-	./linux/scripts/release.sh "$(VASM_VERSION)"
-
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for
 # easy local testing of a newly-built .deb package
@@ -52,3 +66,13 @@ install-deb:
 
 remove-deb:
 	./linux/scripts/remove-deb.sh
+
+######################################################################################
+# These steps are part of the automated release process; they modify
+#  the Git repository and push to origin
+
+update-config:
+	./linux/scripts/update-config.sh "$(NEW_VASM_URL)" "$(NEW_VASM_DOC_URL)" "$(NEW_VASM_VERSION)"
+
+release:
+	./linux/scripts/release.sh "$(VASM_VERSION)"
