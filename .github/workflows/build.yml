@@ -42,6 +42,11 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev jq
           source ./linux/scripts/install-linuxbrew.sh
+          echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
+          echo "::set-env name=HOMEBREW_CELLAR::${HOMEBREW_CELLAR}"
+          echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
+          echo "::add-path::${HOMEBREW_PREFIX}/bin"
+          echo "::add-path::${HOMEBREW_PREFIX}/sbin"
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
