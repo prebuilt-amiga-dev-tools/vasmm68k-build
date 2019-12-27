@@ -52,6 +52,7 @@ jobs:
           umask 0022
           umask
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer
           ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/
           ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/
           ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/
