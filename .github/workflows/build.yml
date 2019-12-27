@@ -136,6 +136,16 @@ jobs:
           echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
           echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update && sudo apt-get -y install jq
+          source ./linux/scripts/install-linuxbrew.sh
+          echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
+          echo "::set-env name=HOMEBREW_CELLAR::${HOMEBREW_CELLAR}"
+          echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
+          echo "::add-path::${HOMEBREW_PREFIX}/bin"
+          echo "::add-path::${HOMEBREW_PREFIX}/sbin"
+          brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
       - name: Download linux-artifacts
         uses: actions/download-artifact@v1
         with:
