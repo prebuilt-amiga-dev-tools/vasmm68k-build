@@ -50,7 +50,9 @@ jobs:
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
           # Hack: change permissions for library from 666 to 644 since the umask is not honored
           #  yet 'brew audit' requires 644 for the formula file on Linux
-          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}
+          # We change permissions for all taps, since brew will lowercase org folder names, so
+          #  ...SOURCE_ORGANIZATION is not necessarily a valid folder name
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
       - name: Create .deb package
@@ -151,7 +153,9 @@ jobs:
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
           # Hack: change permissions for library from 666 to 644 since the umask is not honored
           #  yet 'brew audit' requires 644 for the formula file on Linux
-          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}
+          # We change permissions for all taps, since brew will lowercase org folder names, so
+          #  ...SOURCE_ORGANIZATION is not necessarily a valid folder name
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps
       - name: Download linux-artifacts
         uses: actions/download-artifact@v1
         with:
