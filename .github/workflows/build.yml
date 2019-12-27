@@ -52,6 +52,10 @@ jobs:
           umask 0022
           umask
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/
           ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
