@@ -41,7 +41,7 @@ jobs:
       - name: Install prerequisites
         run: |
           sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev jq
-          ./linux/scripts/install-linuxbrew.sh
+          source ./linux/scripts/install-linuxbrew.sh
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
