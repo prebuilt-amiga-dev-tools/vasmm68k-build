@@ -26,11 +26,11 @@ endif
 
 BUILD_RESULTS_DIR = build_results
 
-.PHONY: clean download build package test
+.PHONY: clean download build package-deb test-deb update-homebrew-formula-locally test-homebrew-formula
 
-default: clean download build package test
+default: clean download build package-deb test-deb update-homebrew-formula-locally test-homebrew-formula
 
-.PHONY: install test-deb install-deb remove-deb extract-changelog release
+.PHONY: install-deb uninstall-deb extract-changelog release
 
 ######################################################################################
 # These build steps are intended to be invoked manually with make
@@ -44,12 +44,8 @@ download:
 build:
 	./linux/scripts/build.sh
 
-package: package-deb
-
 package-deb:
 	./linux/scripts/package-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)" "$(DISTRIBUTION)"
-
-test: test-deb
 
 test-deb:
 	./linux/scripts/test-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)" "$(DISTRIBUTION)"
@@ -64,8 +60,8 @@ extract-changelog:
 install-deb:
 	./linux/scripts/install-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_DVERSION)" "$(DISTRIBUTION)"
 
-remove-deb:
-	./linux/scripts/remove-deb.sh
+uninstall-deb:
+	./linux/scripts/uninstall-deb.sh
 
 ######################################################################################
 # These steps are part of the automated release process; they modify
@@ -76,3 +72,7 @@ update-config:
 
 release:
 	./linux/scripts/release.sh "$(VASM_VERSION)"
+
+######################################################################################
+
+include homebrew/Make.mk
