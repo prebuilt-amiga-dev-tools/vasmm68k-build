@@ -40,7 +40,6 @@ jobs:
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
-          umask 022
           sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev jq
           source ./linux/scripts/install-linuxbrew.sh
           echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
@@ -48,16 +47,10 @@ jobs:
           echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
-          umask 022
-          umask 0022
-          umask
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
-          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
+          # Hack: change permissions for library from 666 to 644 since the umask is not honored
+          #  yet 'brew audit' requires 644 for the formula file on Linux
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
       - name: Create .deb package
@@ -65,15 +58,9 @@ jobs:
       - name: Test .deb package
         run: DISTRIBUTION=xenial make test-deb
       - name: Update homebrew formula locally
-        run: |
-          umask 022
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
-          make update-homebrew-formula-locally
+        run: make update-homebrew-formula-locally
       - name: Test homebrew formula
-        run: |
-          umask 022
-          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
-          make test-homebrew-formula
+        run: make test-homebrew-formula
       - name: Extract changelog
         run: make extract-changelog
       - name: Upload artifacts
@@ -154,7 +141,6 @@ jobs:
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
-          umask 022
           sudo apt-get update && sudo apt-get -y install jq
           source ./linux/scripts/install-linuxbrew.sh
           echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
@@ -163,6 +149,9 @@ jobs:
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          # Hack: change permissions for library from 666 to 644 since the umask is not honored
+          #  yet 'brew audit' requires 644 for the formula file on Linux
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}
       - name: Download linux-artifacts
         uses: actions/download-artifact@v1
         with:
