@@ -40,6 +40,7 @@ jobs:
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
+          umask 022
           sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev jq
           source ./linux/scripts/install-linuxbrew.sh
           echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
@@ -138,6 +139,7 @@ jobs:
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
+          umask 022
           sudo apt-get update && sudo apt-get -y install jq
           source ./linux/scripts/install-linuxbrew.sh
           echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
