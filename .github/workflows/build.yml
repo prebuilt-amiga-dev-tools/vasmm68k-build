@@ -48,6 +48,9 @@ jobs:
           echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
+          umask 022
+          umask 0022
+          umask
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
           ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
       - name: Build executables
