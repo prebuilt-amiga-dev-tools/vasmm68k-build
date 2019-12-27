@@ -126,6 +126,7 @@ jobs:
     timeout-minutes: 30
     needs: [build-linux, build-windows, build-macosx]
     steps:
+      - uses: actions/checkout@v1
       - name: Get branch info
         id: branch_info
         run: |
