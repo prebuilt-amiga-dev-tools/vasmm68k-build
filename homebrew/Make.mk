@@ -24,5 +24,5 @@ uninstall-homebrew-formula:
 # These steps are part of the automated release process; they modify
 #  the Git repository, push to origin and create a pull request
 
-update-homebrew-formula-and-push:
-	./homebrew/scripts/update-homebrew-formula.sh "$(NEW_VASM_URL)" "$(NEW_VASM_VERSION)" true
+update-homebrew-formula-and-create-pr:
+	./homebrew/scripts/update-homebrew-formula.sh "$(VASM_URL)" "$(VASM_VERSION)" true
