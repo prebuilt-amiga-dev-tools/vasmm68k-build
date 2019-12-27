@@ -6,13 +6,13 @@ test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>
 echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
 
 echo "====================== .profile ========================="
-test -r ~/.profile && echo ~/.profile
+test -r ~/.profile && cat ~/.profile
 
 echo "====================== .bash_profile ========================="
-test -r ~/.bash_profile && echo ~/.bash_profile
+test -r ~/.bash_profile && cat ~/.bash_profile
 
 echo "====================== .bashrc ========================="
-test -r ~/.bashrc && echo ~/.bashrc
+test -r ~/.bashrc && cat ~/.bashrc
 
 echo "====================== path ========================="
 echo $PATH
