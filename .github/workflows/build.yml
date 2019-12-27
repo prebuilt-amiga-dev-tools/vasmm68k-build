@@ -49,6 +49,7 @@ jobs:
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
       - name: Create .deb package
@@ -56,9 +57,15 @@ jobs:
       - name: Test .deb package
         run: DISTRIBUTION=xenial make test-deb
       - name: Update homebrew formula locally
-        run: make update-homebrew-formula-locally
+        run: |
+          umask 022
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
+          make update-homebrew-formula-locally
       - name: Test homebrew formula
-        run: make test-homebrew-formula
+        run: |
+          umask 022
+          ls -l /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/kalmalyzer/homebrew-prebuilt-amiga-dev-tools/Formula/vasmm68k.rb
+          make test-homebrew-formula
       - name: Extract changelog
         run: make extract-changelog
       - name: Upload artifacts
