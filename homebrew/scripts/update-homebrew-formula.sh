@@ -32,19 +32,6 @@ else
  exit 1
 fi
 
-echo "====================== .profile ========================="
-test -r ~/.profile && cat ~/.profile
-
-echo "====================== .bash_profile ========================="
-test -r ~/.bash_profile && cat ~/.bash_profile
-
-echo "====================== .bashrc ========================="
-test -r ~/.bashrc && cat ~/.bashrc
-
-echo "====================== path ========================="
-echo $PATH
-
-
 # Retrieve formula version as a string without surrounding quotes
 CURRENT_FORMULA_VERSION=`brew info "${FORMULA}" --json | jq ".[0].versions.stable" | sed "s/\"//g"`
 
