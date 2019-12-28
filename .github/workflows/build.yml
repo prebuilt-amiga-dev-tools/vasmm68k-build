@@ -189,4 +189,6 @@ jobs:
           client-payload: '{ "download_url": "https://github.com/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
 
       - name: Send PR with updated Homebrew formula to Homebrew tap repository
-        run: make update-homebrew-formula-and-create-pr
+          # Use an account token instead of a repo-local token for brew's API operations
+          # The account token will allow forking etc
+          run: HOMEBREW_GITHUB_API_TOKEN=${{ secrets.BREW_PAT }} make update-homebrew-formula-and-create-pr
