@@ -40,5 +40,7 @@ CURRENT_FORMULA_VERSION=`brew info "${FORMULA}" --json | jq ".[0].versions.stabl
 #
 # This will fail when trying to downgrade the vasm version
 if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
-    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" ${BUMP_ARGS} "${FORMULA}"
+    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
+else
+    echo "Current and desired vasm versions are both set to ${CURRENT_FORMULA_VERSION}, skipping PR step"
 fi
