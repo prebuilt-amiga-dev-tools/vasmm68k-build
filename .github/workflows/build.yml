@@ -191,9 +191,8 @@ jobs:
       - name: Send PR with updated Homebrew formula to Homebrew tap repository
         run: |
           # Force a dummy identity for the commit operation
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-          git config --global credential.username "Kalmalyzer"
+          git config --global user.email "mikael@kalms.org"
+          git config --global user.name "Mikael Kalms"
           # Use an account token instead of a repo-local token for brew's API operations
           # The account token will allow forking etc
           HOMEBREW_GITHUB_API_TOKEN=${{ secrets.BREW_PAT }} make update-homebrew-formula-and-create-pr
