@@ -199,8 +199,8 @@ jobs:
           echo "*** B"
 
           # Use hardcoded default credentials for commits
-          git config --global user.email "you@example.com"
-          git config --global user.name "You Yourself"
+          #git config --global user.email "you@example.com"
+          #git config --global user.name "You Yourself"
 
           echo "*** C"
 
