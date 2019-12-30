@@ -48,6 +48,11 @@ jobs:
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
           brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          # Hack: change permissions for library from 666 to 644 since the umask is not honored
+          #  yet 'brew audit' requires 644 for the formula file on Linux
+          # We change permissions for all taps, since brew will lowercase org folder names, so
+          #  ...SOURCE_ORGANIZATION is not necessarily a valid folder name
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps
       - name: Build executables
         run: DISTRIBUTION=xenial make clean download build
       - name: Create .deb package
@@ -126,6 +131,7 @@ jobs:
     timeout-minutes: 30
     needs: [build-linux, build-windows, build-macosx]
     steps:
+      - uses: actions/checkout@v1
       - name: Get branch info
         id: branch_info
         run: |
@@ -135,6 +141,21 @@ jobs:
           echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
           echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
           # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update && sudo apt-get -y install jq
+          source ./linux/scripts/install-linuxbrew.sh
+          echo "::set-env name=HOMEBREW_PREFIX::${HOMEBREW_PREFIX}"
+          echo "::set-env name=HOMEBREW_CELLAR::${HOMEBREW_CELLAR}"
+          echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
+          echo "::add-path::${HOMEBREW_PREFIX}/bin"
+          echo "::add-path::${HOMEBREW_PREFIX}/sbin"
+          brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          # Hack: change permissions for library from 666 to 644 since the umask is not honored
+          #  yet 'brew audit' requires 644 for the formula file on Linux
+          # We change permissions for all taps, since brew will lowercase org folder names, so
+          #  ...SOURCE_ORGANIZATION is not necessarily a valid folder name
+          chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps
       - name: Download linux-artifacts
         uses: actions/download-artifact@v1
         with:
@@ -153,11 +174,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "linux-artifacts/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi"
       
-      # Disabled publishing of Chocolatey package for now.
-      # The file name is not based on VASM_VERSION but on VASM_PACKAGE_VERSION
-      #   and thus we need logic to translate SOURCE_VERSION from the former to the latter format to make this step work.
-      # Filename: 
-      # windows-binaries/vasmm68k.${{ steps.branch_info.outputs.SOURCE_VERSION }}.nupkg
+      # # Disabled publishing of Chocolatey package for now.
+      # # The file name is not based on VASM_VERSION but on VASM_PACKAGE_VERSION
+      # #   and thus we need logic to translate SOURCE_VERSION from the former to the latter format to make this step work.
+      # # Filename: 
+      # # windows-binaries/vasmm68k.${{ steps.branch_info.outputs.SOURCE_VERSION }}.nupkg
 
       - name: Publish Linux deb package to Apt repository
         uses: peter-evans/repository-dispatch@v1
@@ -166,3 +187,19 @@ jobs:
           repository: ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/apt
           event-type: add-deb-package
           client-payload: '{ "download_url": "https://github.com/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
+
+      - name: Send PR with updated Homebrew formula to Homebrew tap repository
+        run: |
+
+          # Use hardcoded credentials for commits
+          git config --global user.email "unknown@example.com"
+          git config --global user.name "Release job for vasmm68k"
+
+          # Use an account token when performing Git operations against server
+          # The account token will allow pushes, branch creation etc
+          git config --global credential.helper store
+          echo "https://${{ secrets.HOMEBREW_REPO__FORK_AND_UPDATE__TOKEN }}:x-oauth-basic@github.com" > ~/.git-credentials
+
+          # Use an account token instead of a repo-local token for brew's API operations
+          # The account token will allow forking etc
+          HOMEBREW_GITHUB_API_TOKEN=${{ secrets.HOMEBREW_REPO__FORK_AND_UPDATE__TOKEN }} make update-homebrew-formula-and-create-pr
