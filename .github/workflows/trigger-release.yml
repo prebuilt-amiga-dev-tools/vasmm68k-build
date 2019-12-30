@@ -32,7 +32,7 @@ jobs:
         with:
           # Use a different token than GITHUB_TOKEN for accessing the repository
           # The non-default token will make the push operations trigger new workflow runs in build.yml
-          token: "${{ secrets.THIS_REPO_RELEASE_TOKEN }}"
+          token: "${{ secrets.THIS_REPO__PUSH__TOKEN }}"
       - name: Update config
         run: NEW_VASM_URL=${{ github.event.client_payload.vasm_url }} NEW_VASM_DOC_URL=${{ github.event.client_payload.vasm_doc_url }} NEW_VASM_VERSION=${{ github.event.client_payload.vasm_version }} make update-config
       - name: Trigger new release

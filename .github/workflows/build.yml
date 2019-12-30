@@ -183,7 +183,7 @@ jobs:
       - name: Publish Linux deb package to Apt repository
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.APT_PUBLISHER_TOKEN }}
+          token: ${{ secrets.APT_REPO__REPOSITORY_DISPATCH__TOKEN }}
           repository: ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/apt
           event-type: add-deb-package
           client-payload: '{ "download_url": "https://github.com/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
