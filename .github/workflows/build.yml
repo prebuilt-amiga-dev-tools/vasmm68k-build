@@ -198,8 +198,8 @@ jobs:
           # Use an account token when performing Git operations against server
           # The account token will allow pushes, branch creation etc
           git config --global credential.helper store
-          echo "https://${{ secrets.BREW_PAT }}:x-oauth-basic@github.com" > ~/.git-credentials
+          echo "https://${{ secrets.HOMEBREW_REPO__FORK_AND_UPDATE__TOKEN }}:x-oauth-basic@github.com" > ~/.git-credentials
 
           # Use an account token instead of a repo-local token for brew's API operations
           # The account token will allow forking etc
-          HOMEBREW_GITHUB_API_TOKEN=${{ secrets.BREW_PAT }} make update-homebrew-formula-and-create-pr
+          HOMEBREW_GITHUB_API_TOKEN=${{ secrets.HOMEBREW_REPO__FORK_AND_UPDATE__TOKEN }} make update-homebrew-formula-and-create-pr
