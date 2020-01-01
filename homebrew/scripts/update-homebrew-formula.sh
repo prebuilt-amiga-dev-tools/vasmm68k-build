@@ -40,6 +40,11 @@ CURRENT_FORMULA_VERSION=`brew info "${FORMULA}" --json | jq ".[0].versions.stabl
 #
 # This will fail when trying to downgrade the vasm version
 if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
+    # There might be a feature branch since previous attempts to publish this particular formula
+    #   update; if so, delete that branch
+    if [[ `git ls-remote origin ${FORMULA}-${VASM_VERSION}` ]]; then
+      git push --delete origin ${FORMULA}-${VASM_VERSION}
+    fi
     brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
 else
     echo "Current and desired vasm versions are both set to ${CURRENT_FORMULA_VERSION}, skipping PR step"
