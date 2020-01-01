@@ -44,7 +44,7 @@ if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
     if [[ "${SHOULD_COMMIT}" == "true" ]]; then
         # There might be a feature branch since previous attempts to publish this particular formula
         #   update; if so, delete that branch
-        TAP_REPO_FOLDER="${HOMEBREW_REPOSITORY}/Library/Taps/`brew tap | grep prebuilt-amiga-dev-tools | cut -d / -f 1`/homebrew-prebuilt-amiga-dev-tools"
+        TAP_REPO_FOLDER="${HOMEBREW_REPOSITORY}/Library/Taps/`brew tap | grep "/prebuilt-amiga-dev-tools" | cut -d / -f 1`/homebrew-prebuilt-amiga-dev-tools"
         if [[ `(cd ${TAP_REPO_FOLDER} && git ls-remote origin ${FORMULA}-${VASM_VERSION})` ]]; then
             (cd ${TAP_REPO_FOLDER} && git push --delete origin ${FORMULA}-${VASM_VERSION})
         fi
