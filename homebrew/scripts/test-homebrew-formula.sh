@@ -9,7 +9,7 @@ fi
 
 FORMULA=vasmm68k
 
-brew audit ${FORMULA}
+brew audit --strict ${FORMULA}
 brew install ${FORMULA}
 brew test ${FORMULA}
 brew uninstall ${FORMULA}
