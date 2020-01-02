@@ -24,7 +24,10 @@ if [[ "${VASM_VERSION}" == "" ]]; then
 fi
 
 if [[ "${SHOULD_COMMIT}" == "false" ]]; then
-  BUMP_ARGS="--dry-run --write"
+  # --dry-run: do not call GitHub APIs, do not commit or push
+  # --write: Update contents of vasmm68k.rb
+  # --force: proceed instead of failing if there already is a pull request for the vasmm68k version in question
+  BUMP_ARGS="--dry-run --write --force"
 elif [[ "${SHOULD_COMMIT}" == "true" ]]; then
   BUMP_ARGS=""
 else
