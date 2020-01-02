@@ -24,7 +24,10 @@ if [[ "${VASM_VERSION}" == "" ]]; then
 fi
 
 if [[ "${SHOULD_COMMIT}" == "false" ]]; then
-  BUMP_ARGS="--dry-run --write"
+  # --dry-run: do not call GitHub APIs, do not commit or push
+  # --write: Update contents of vasmm68k.rb
+  # --force: proceed instead of failing if there already is a pull request for the vasmm68k version in question
+  BUMP_ARGS="--dry-run --write --force"
 elif [[ "${SHOULD_COMMIT}" == "true" ]]; then
   BUMP_ARGS=""
 else
@@ -52,7 +55,7 @@ if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
         curl -X DELETE -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/repos/${USERNAME}/homebrew-prebuilt-amiga-dev-tools/git/refs/heads/${FORMULA}-${VASM_VERSION}
     fi
 
-    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
+    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse --strict ${BUMP_ARGS} "${FORMULA}"
 else
     echo "Current and desired vasm versions are both set to ${CURRENT_FORMULA_VERSION}, skipping PR step"
 fi
