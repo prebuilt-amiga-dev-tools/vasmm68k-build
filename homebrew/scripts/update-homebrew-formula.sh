@@ -55,7 +55,7 @@ if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
         curl -X DELETE -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/repos/${USERNAME}/homebrew-prebuilt-amiga-dev-tools/git/refs/heads/${FORMULA}-${VASM_VERSION}
     fi
 
-    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
+    brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse --strict ${BUMP_ARGS} "${FORMULA}"
 else
     echo "Current and desired vasm versions are both set to ${CURRENT_FORMULA_VERSION}, skipping PR step"
 fi
