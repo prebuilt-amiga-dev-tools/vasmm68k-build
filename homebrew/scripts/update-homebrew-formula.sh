@@ -41,30 +41,15 @@ CURRENT_FORMULA_VERSION=`brew info "${FORMULA}" --json | jq ".[0].versions.stabl
 # This will fail when trying to downgrade the vasm version
 if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
 
-    echo "About to update vasm version"
-
     if [[ "${SHOULD_COMMIT}" == "true" ]]; then
-
-        echo "should commit? yes!"
-        echo "Homebrew repo: ${HOMEBREW_REPOSITORY}"
-        brew tap
-
-        # There might be a feature branch since previous attempts to publish this particular formula
+        # There might be a feature branch in the fork since previous attempts to publish this particular formula
         #   update; if so, delete that branch
-        TAP_REPO_FOLDER="${HOMEBREW_REPOSITORY}/Library/Taps/`brew tap | grep "/prebuilt-amiga-dev-tools" | cut -d / -f 1`/homebrew-prebuilt-amiga-dev-tools"
-        echo "Tap repo folder: ${TAP_REPO_FOLDER}"
-        ls -l ${TAP_REPO_FOLDER}
-        echo "remotes:"
-        (cd ${TAP_REPO_FOLDER} && git remote -v)
-        echo "stuff on origin:"
-        (cd ${TAP_REPO_FOLDER} && git ls-remote origin)
-        echo "particular branch on origin:"
-        (cd ${TAP_REPO_FOLDER} && git ls-remote origin ${FORMULA}-${VASM_VERSION})
-        
-        if [[ `(cd ${TAP_REPO_FOLDER} && git ls-remote origin ${FORMULA}-${VASM_VERSION})` ]]; then
-            echo "deleting branch"
-            (cd ${TAP_REPO_FOLDER} && git push --delete origin ${FORMULA}-${VASM_VERSION})
+        USERNAME=`curl -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/user | jq -r ".login"`
+        if [[ ${USERNAME} == "null" ]]; then
+            echo 1>&2 "Unable to determine user associated with HOMEBREW_GITHUB_API_TOKEN"
+            exit 1
         fi
+        curl -X DELETE -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/repos/${USERNAME}/homebrew-prebuilt-amiga-dev-tools/git/refs/heads/${FORMULA}-${VASM_VERSION}
     fi
 
     brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
