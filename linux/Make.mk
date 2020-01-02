@@ -51,7 +51,7 @@ test-deb:
 	./linux/scripts/test-deb.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)" "$(DISTRIBUTION)"
 
 extract-changelog:
-	./linux/scripts/extract-changelog.sh "$(VASM_VERSION)"
+	./linux/scripts/extract-changelog.sh "$(BUILD_RESULTS_DIR)" "$(VASM_VERSION)"
 
 ######################################################################################
 # These build steps are not part of the build/package process; they allow for

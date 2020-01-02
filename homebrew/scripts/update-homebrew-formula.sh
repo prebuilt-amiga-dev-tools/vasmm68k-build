@@ -40,6 +40,18 @@ CURRENT_FORMULA_VERSION=`brew info "${FORMULA}" --json | jq ".[0].versions.stabl
 #
 # This will fail when trying to downgrade the vasm version
 if [[ "${CURRENT_FORMULA_VERSION}" != "${VASM_VERSION}" ]]; then
+
+    if [[ "${SHOULD_COMMIT}" == "true" ]]; then
+        # There might be a feature branch in the fork since previous attempts to publish this particular formula
+        #   update; if so, delete that branch
+        USERNAME=`curl -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/user | jq -r ".login"`
+        if [[ ${USERNAME} == "null" ]]; then
+            echo 1>&2 "Unable to determine user associated with HOMEBREW_GITHUB_API_TOKEN"
+            exit 1
+        fi
+        curl -X DELETE -H "Authorization: token ${HOMEBREW_GITHUB_API_TOKEN}" https://api.github.com/repos/${USERNAME}/homebrew-prebuilt-amiga-dev-tools/git/refs/heads/${FORMULA}-${VASM_VERSION}
+    fi
+
     brew bump-formula-pr "--url=${VASM_URL}" "--version=${VASM_VERSION}" --no-browse ${BUMP_ARGS} "${FORMULA}"
 else
     echo "Current and desired vasm versions are both set to ${CURRENT_FORMULA_VERSION}, skipping PR step"

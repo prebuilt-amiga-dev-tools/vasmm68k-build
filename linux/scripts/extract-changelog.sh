@@ -1,11 +1,12 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-  echo 1>&2 "Usage: $0 VASM_VERSION"
+if [ $# -ne 2 ]; then
+  echo 1>&2 "Usage: $0 BUILD_RESULTS_DIR VASM_VERSION"
   exit 1
 fi
 
-VASM_VERSION="$1"
+BUILD_RESULTS_DIR="$1"
+VASM_VERSION="$2"
 
 ######################################################################################
 
@@ -59,10 +60,12 @@ function convert-text-to-markdown() {
 
 ######################################################################################
 
+mkdir -p "${BUILD_RESULTS_DIR}"
+
 # Extract changelog as text file
-cp vasm/history build_results/changelog.txt
-awk "/^- ${VASM_VERSION}/{flag=1; next} /^$/{flag=0} flag" vasm/history > build_results/changelog-for-version.txt
+cp vasm/history ${BUILD_RESULTS_DIR}/changelog.txt
+awk "/^- ${VASM_VERSION}/{flag=1; next} /^$/{flag=0} flag" vasm/history > ${BUILD_RESULTS_DIR}/changelog-for-version.txt
 
 # Convert changelog to markdown
-cat build_results/changelog.txt | convert_multiline_paragraphs_to_single_line_paragraphs | convert-text-to-markdown > build_results/changelog.md
-cat build_results/changelog-for-version.txt | convert_multiline_paragraphs_to_single_line_paragraphs | convert-text-to-markdown > build_results/changelog-for-version.md
+cat ${BUILD_RESULTS_DIR}/changelog.txt | convert_multiline_paragraphs_to_single_line_paragraphs | convert-text-to-markdown > ${BUILD_RESULTS_DIR}/changelog.md
+cat ${BUILD_RESULTS_DIR}/changelog-for-version.txt | convert_multiline_paragraphs_to_single_line_paragraphs | convert-text-to-markdown > ${BUILD_RESULTS_DIR}/changelog-for-version.md
