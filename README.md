@@ -11,31 +11,14 @@ See [the official vasm website](http://sun.hasenbraten.de/vasm) for more informa
 
 See [LICENSE.md](LICENSE.md).
 
-# Windows users
+# Installation
 
-There are two distributions for Windows users; an installer package, and a raw set of binaries.
-
-## Run installer
-
-Download a windows-installer package from the [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) page. Then run the installer. It will install `vasmm68k_mot.exe`, `vasmm68k_std.exe` and `vobjdump.exe` into `<Program Files location>\prebuilt-amiga-dev-tools\bin`, and add that folder to your path.
-
-## Download binaries
-
-Download a windows-binaries package from the [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) page. Then unpack the archive to a suitable location.
-
-# Linux (Ubuntu) users
-
-First, add the Apt repository to your list of default repos:
-
-```
-sudo echo "deb https://prebuilt-amiga-dev-tools.github.io/apt/ xenial main" | sudo tee /etc/apt/sources.list.d/prebuilt-amiga-dev-tools.list
-wget http://prebuilt-amiga-dev-tools.github.io/apt/PUBLIC.KEY -O - | sudo apt-key add -
-```
-
-Then, install vasmm68k:
-```
-sudo apt-get update && apt-get install vasmm68k
-```
+| OS | Method | Instructions |
+| --- | --- | --- |
+| Windows | Raw binaries | Download & unpack .zip from [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) |
+| Windows | Stand-alone installer | Download & run MSI from [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) |
+| Linux | APT | [Add apt repo](https://github.com/prebuilt-amiga-dev-tools/apt/)<br>`sudo apt-get update && apt-get install vasmm68k` |
+| MacOS | Homebrew | `brew install prebuilt-amiga-dev-tools/prebuilt-amiga-dev-tools/vasmm68k` |
 
 # Development
 
