@@ -87,7 +87,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Download source
         run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make clean download
@@ -112,7 +112,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
@@ -142,7 +142,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
@@ -178,7 +178,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: .\global-environment-variables\global-environment-variables.ps1
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Build executables
         shell: powershell
@@ -215,7 +215,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
@@ -240,7 +240,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
@@ -286,7 +286,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Download linux-deb-artifacts
         uses: actions/download-artifact@v1
@@ -314,7 +314,7 @@ jobs:
           name: global-environment-variables
       - name: Apply global environment variables to current job
         id: global_env
-        run: ./global-environment-variables/global-environment-variables.sh
+        run: chmod ugo+x ./global-environment-variables/global-environment-variables.sh && ./global-environment-variables/global-environment-variables.sh
         # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
