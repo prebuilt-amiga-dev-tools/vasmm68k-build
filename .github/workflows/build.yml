@@ -22,6 +22,24 @@ on:
     branches:
       - '**'
 
+  repository_dispatch:
+
+    # build-nightly will trigger a build of nightly on master
+    #
+    # Syntax for invoking this trigger:
+    #
+    # USERNAME=<name> \
+    # PERSONAL_ACCESS_TOKEN=<token> \
+    # ORGANIZATION=<org> \
+    # REPOSITORY=<repo> \
+    # bash -c 'curl -XPOST -u $USERNAME:$PERSONAL_ACCESS_TOKEN \
+    #    -H "Accept: application/vnd.github.everest-preview+json" \
+    #    -H "Content-Type: application/json" \
+    #    "https://api.github.com/repos/$ORGANIZATION/$REPOSITORY/dispatches" \
+    #    --data "{\"event_type\" : \"build-nightly\" }"'
+    #
+    types: [build-nightly]
+
 #
 # The build jobs are organized into two phases:
 #
@@ -41,14 +59,45 @@ on:
 # The Publish phase only runs when a release has been triggered.
 
 jobs:
+  capture-global-environment-variables:
+    name: Capture shared environment variables
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Capture environment variables
+      run: |
+        touch global-environment-variables.sh
+        echo "echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}" >> global-environment-variables.sh
+        echo "echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}"" >> global-environment-variables.sh
+        echo "echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}" >> global-environment-variables.sh
+        echo "echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}" >> global-environment-variables.sh
+        echo "echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)" >> global-environment-variables.sh
+        echo "echo ::set-output name=BUILD_TYPE::${{ if (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/')) { 'RELEASE' } else { 'NIGHTLY' } }}" >> global-environment-variables.sh
+        chmod ugo+x global-environment-variables.sh
+        cp global-environment-variables.sh global-environment-variables.ps1
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: global-environment-variables
+        path: .
+
   extract-changelog:
     name: Extract changelog
-    runs-on: ubuntu-16.04
-    timeout-minutes: 30
+    needs: [capture-global-environment-variables]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v1
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Download source
-        run: make clean download
+        run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make clean download
       - name: Extract changelog
         run: make extract-changelog
       - name: Upload artifacts
@@ -59,30 +108,28 @@ jobs:
 
   build-linux-deb:
     name: Build for Linux - .deb package
+    needs: [capture-global-environment-variables]
     runs-on: ubuntu-16.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
           sudo apt-get update && sudo apt-get -y install debhelper devscripts libevent-dev
       - name: Build executables
-        run: DISTRIBUTION=xenial make clean download build
+        run: DISTRIBUTION=xenial BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make clean download build
       - name: Create .deb package
-        run: DISTRIBUTION=xenial make package-deb
+        run: DISTRIBUTION=xenial BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make package-deb
       - name: Test .deb package
-        run: DISTRIBUTION=xenial make test-deb
-      - name: Extract changelog
-        run: make extract-changelog
+        run: DISTRIBUTION=xenial BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make test-deb
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -91,19 +138,19 @@ jobs:
 
   build-linux-linuxbrew:
     name: Build for Linux - Linuxbrew formula
+    needs: [capture-global-environment-variables]
     runs-on: ubuntu-16.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
           sudo apt-get update && sudo apt-get -y install jq
@@ -113,24 +160,33 @@ jobs:
           echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
-          brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          brew tap ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
           # Hack: change permissions for library from 666 to 644 since the umask is not honored
           #  yet 'brew audit' requires 644 for the formula file on Linux
           # We change permissions for all taps, since brew will lowercase org folder names, so
           #  ...SOURCE_ORGANIZATION is not necessarily a valid folder name
           chmod -R go-w /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps
       - name: Update homebrew formula locally
-        run: make update-homebrew-formula-locally
+        run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make update-homebrew-formula-locally
       - name: Test homebrew formula
-        run: make test-homebrew-formula
+        run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make test-homebrew-formula
 
   build-windows:
     name: Build for Windows
+    needs: [capture-global-environment-variables]
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: .\global-environment-variables\global-environment-variables.ps1
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Build executables
         shell: powershell
         run: |
@@ -155,27 +211,27 @@ jobs:
 
   build-macosx-homebrew:
     name: Build for MacOSX - Homebrew formula
+    needs: [capture-global-environment-variables]
     runs-on: macos-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
           brew install jq
-          brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          brew tap ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
       - name: Update homebrew formula locally
-        run: make update-homebrew-formula-locally
+        run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make update-homebrew-formula-locally
       - name: Test homebrew formula
-        run: make test-homebrew-formula
+        run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make test-homebrew-formula
 
   publish-github:
     if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
@@ -185,15 +241,14 @@ jobs:
     needs: [extract-changelog, build-linux-deb, build-linux-linuxbrew, build-windows, build-macosx-homebrew]
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
           sudo apt-get update && sudo apt-get -y install jq
@@ -213,16 +268,16 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1
         with:
-          name: ${{ steps.branch_info.outputs.SOURCE_VERSION }}
+          name: ${{ steps.global_env.outputs.SOURCE_VERSION }}
           draft: false
           bodyFile: changelog-artifacts/changelog-for-version.md
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "linux-deb-artifacts/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-binaries.zip,windows-artifacts/vasmm68k-${{ steps.branch_info.outputs.SOURCE_VERSION }}-windows-installer.msi"
+          artifacts: "linux-deb-artifacts/vasmm68k_${{ steps.global_env.outputs.SOURCE_VERSION }}_amd64.xenial.deb,windows-artifacts/vasmm68k-${{ steps.global_env.outputs.SOURCE_VERSION }}-windows-binaries.zip,windows-artifacts/vasmm68k-${{ steps.global_env.outputs.SOURCE_VERSION }}-windows-installer.msi"
           # # Disabled publishing of Chocolatey package for now.
           # # The file name is not based on VASM_VERSION but on VASM_PACKAGE_VERSION
           # #   and thus we need logic to translate SOURCE_VERSION from the former to the latter format to make this step work.
           # # Filename: 
-          # # windows-binaries/vasmm68k.${{ steps.branch_info.outputs.SOURCE_VERSION }}.nupkg
+          # # windows-binaries/vasmm68k.${{ steps.global_env.outputs.SOURCE_VERSION }}.nupkg
 
   publish-apt:
     if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
@@ -232,15 +287,14 @@ jobs:
     needs: [extract-changelog, build-linux-deb, build-linux-linuxbrew, build-windows, build-macosx-homebrew, publish-github]
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Download linux-deb-artifacts
         uses: actions/download-artifact@v1
         with:
@@ -249,27 +303,26 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.APT_REPO__REPOSITORY_DISPATCH__TOKEN }}
-          repository: ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/apt
+          repository: ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/apt
           event-type: add-deb-package
-          client-payload: '{ "download_url": "https://github.com/${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.branch_info.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.branch_info.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
+          client-payload: '{ "download_url": "https://github.com/${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.global_env.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.global_env.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
 
   publish-homebrew:
     if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
     name: Publish to Homebrew tap
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [extract-changelog, build-linux-deb, build-linux-linuxbrew, build-windows, build-macosx-homebrew]
+    needs: [extract-changelog, build-linux-deb, build-linux-linuxbrew, build-windows, build-macosx-homebrew, publish-github]
     steps:
       - uses: actions/checkout@v1
-      - name: Get branch info
-        id: branch_info
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}
-          echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${{ github.repository }} | cut -d / -f 1)
-          # These can be accessed as ${{ steps.branch_info.outputs.SOURCE_NAME }} etc in subsequent steps
+      - name: Download global environment variables artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: global-environment-variables
+      - name: Apply global environment variables to current job
+        id: global_env
+        run: ./global-environment-variables/global-environment-variables.sh
+        # These can be accessed as ${{ steps.global_env.outputs.SOURCE_NAME }} etc in subsequent steps
       - name: Install prerequisites
         run: |
           sudo apt-get update && sudo apt-get -y install jq
@@ -279,7 +332,7 @@ jobs:
           echo "::set-env name=HOMEBREW_REPOSITORY::${HOMEBREW_REPOSITORY}"
           echo "::add-path::${HOMEBREW_PREFIX}/bin"
           echo "::add-path::${HOMEBREW_PREFIX}/sbin"
-          brew tap ${{ steps.branch_info.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
+          brew tap ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/prebuilt-amiga-dev-tools
           # Hack: change permissions for library from 666 to 644 since the umask is not honored
           #  yet 'brew audit' requires 644 for the formula file on Linux
           # We change permissions for all taps, since brew will lowercase org folder names, so

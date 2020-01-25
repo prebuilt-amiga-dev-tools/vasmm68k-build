@@ -5,10 +5,14 @@
 # These build steps are intended to be invoked manually with make
 
 update-homebrew-formula-locally:
+ifeq ($(strip $(BUILD_TYPE)),RELEASE)
 	./homebrew/scripts/update-homebrew-formula.sh "$(VASM_URL)" "$(VASM_VERSION)" false
+else
+	echo "Skipping homebrew formula update for NIGHTLY build type"
+endif
 
 test-homebrew-formula:
-	./homebrew/scripts/test-homebrew-formula.sh
+	./homebrew/scripts/test-homebrew-formula.sh "$(BUILD_TYPE)"
 
 ######################################################################################
 # These build steps are not part of the build process; they allow for

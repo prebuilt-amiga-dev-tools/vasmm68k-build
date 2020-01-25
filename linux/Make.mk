@@ -3,24 +3,32 @@
 
 include Config.mk
 
+# DISTRIBUTION defaults to unknown
+
 ifeq ($(strip $(DISTRIBUTION)),)
 DISTRIBUTION := unknown
 endif
 
-# Ensure that VASM_URL, VASM_DOC_URL and VASM_VERSION can be overridden
-#  through the use of NEW_xxx environment variables.
-# These variables are used when calling 'make update-config'.
+# BUILD_TYPE defaults to NIGHTLY
 
-ifneq ($(strip $(NEW_VASM_URL)),)
-VASM_URL = $(NEW_VASM_URL)
+ifeq ($(strip $(BUILD_TYPE)),)
+BUILD_TYPE := NIGHTLY
 endif
 
-ifneq ($(strip $(NEW_VASM_DOC_URL)),)
-VASM_DOC_URL = $(NEW_VASM_DOC_URL)
-endif
+# Setup VASM_URL and VASM_VERSION to refer to either the release or nightly build
 
-ifneq ($(strip $(NEW_VASM_VERSION)),)
-VASM_VERSION = $(NEW_VASM_VERSION)
+ifeq ($(strip $(BUILD_TYPE)),RELEASE)
+VASM_URL := $(VASM_RELEASE_URL)
+VASM_VERSION := $(VASM_RELEASE_VERSION)
+else ifeq ($(strip $(BUILD_TYPE)),NIGHTLY)
+VASM_URL := $(VASM_NIGHTLY_URL)
+# It would be nice if we could have VASM_VERSION = "0.0.0" for nightly builds.
+# However, the .deb packaging flow does not have access to BUILD_TYPE or any local
+#  variables from Make.mk. Therefore, we use VASM_RELEASE_VERSION to keep
+#  the versioning consistent.
+VASM_VERSION := $(VASM_RELEASE_VERSION)
+else
+$(error BUILD_TYPE must be undefined, or set to NIGHTLY or RELEASE)
 endif
 
 
@@ -68,7 +76,7 @@ uninstall-deb:
 #  the Git repository and push to origin
 
 update-config:
-	./linux/scripts/update-config.sh "$(NEW_VASM_URL)" "$(NEW_VASM_DOC_URL)" "$(NEW_VASM_VERSION)"
+	./linux/scripts/update-config.sh "$(NEW_VASM_NIGHTLY_URL)" "$(NEW_VASM_RELEASE_URL)" "$(NEW_VASM_DOC_URL)" "$(NEW_VASM_RELEASE_VERSION)"
 
 release:
 	./linux/scripts/release.sh "$(VASM_VERSION)"
