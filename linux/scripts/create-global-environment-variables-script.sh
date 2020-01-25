@@ -20,11 +20,11 @@ OUTPUT_FILE_POWERSHELL="${BUILD_RESULTS_DIR}/global-environment-variables.ps1"
 mkdir -p "${BUILD_RESULTS_DIR}"
 
 echo "" > ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}" >> ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}" >> ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}" >> ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}" >> ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=SOURCE_ORGANIZATION::$(echo ${GITHUB_REPOSITORY} | cut -d / -f 1)" >> ${OUTPUT_FILE_SHELL}
-echo "echo ::set-output name=BUILD_TYPE::$( if [[ ${IS_RELEASE} != 'false' ]]; then echo 'RELEASE'; else echo 'NIGHTLY'; fi)" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}\"" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}\"" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}\"" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=SOURCE_VERSION::${GITHUB_REF#refs/tags/releases/}\"" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=SOURCE_ORGANIZATION::$(echo ${GITHUB_REPOSITORY} | cut -d / -f 1)\"" >> ${OUTPUT_FILE_SHELL}
+echo "echo \"::set-output name=BUILD_TYPE::$( if [[ ${IS_RELEASE} != 'false' ]]; then echo 'RELEASE'; else echo 'NIGHTLY'; fi)\"" >> ${OUTPUT_FILE_SHELL}
 chmod ugo+x ${OUTPUT_FILE_SHELL}
 cp ${OUTPUT_FILE_SHELL} ${OUTPUT_FILE_POWERSHELL}
