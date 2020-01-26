@@ -17,7 +17,7 @@ See [LICENSE.md](LICENSE.md).
 | --- | --- | --- |
 | Windows | Raw binaries | Download & unpack .zip from [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) |
 | Windows | Stand-alone installer | Download & run MSI from [releases](https://github.com/prebuilt-amiga-dev-tools/vasmm68k/releases) |
-| Linux | APT | [Add apt repo](https://github.com/prebuilt-amiga-dev-tools/apt/)<br>`sudo apt-get update && apt-get install vasmm68k` |
+| Linux | APT | [Add apt repo](https://github.com/prebuilt-amiga-dev-tools/apt-prebuilt-amiga-dev-tools/)<br>`sudo apt-get update && apt-get install vasmm68k` |
 | MacOS | Homebrew | `brew install prebuilt-amiga-dev-tools/prebuilt-amiga-dev-tools/vasmm68k` |
 
 # Development
