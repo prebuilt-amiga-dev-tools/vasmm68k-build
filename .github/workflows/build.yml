@@ -296,7 +296,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.APT_REPO__REPOSITORY_DISPATCH__TOKEN }}
-          repository: ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/apt
+          repository: ${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/apt-prebuilt-amiga-dev-tools
           event-type: add-deb-package
           client-payload: '{ "download_url": "https://github.com/${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.global_env.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.global_env.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
 
