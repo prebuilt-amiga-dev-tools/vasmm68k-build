@@ -1,5 +1,5 @@
 
-name: Trigger Release
+name: Update config + Trigger Release
 
 # This trigger updates the repo's configuration with new download URLs and version number,
 #   and then starts the build + release process.
@@ -16,17 +16,17 @@ name: Trigger Release
 #    -H "Accept: application/vnd.github.everest-preview+json" \
 #    -H "Content-Type: application/json" \
 #    "https://api.github.com/repos/$ORGANIZATION/$REPOSITORY/dispatches" \
-#    --data "{\"event_type\" : \"update-config-and-publish-release\", \
+#    --data "{\"event_type\" : \"update-config-and-trigger-release\", \
 #             \"client_payload\" : { \"vasm_release_url\" : \"$VASM_RELEASE_URL\", \
 #                                    \"vasm_release_version\" : \"$VASM_RELEASE_VERSION\" } }"'
 
 on:
   repository_dispatch:
-    types: [update-config-and-publish-release]
+    types: [update-config-and-trigger-release]
 
 jobs:
-  update-config-and-publish-release:
-    name: Update config and publish release
+  update-config-and-trigger-release:
+    name: Update config and trigger release
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
