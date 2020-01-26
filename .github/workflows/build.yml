@@ -30,8 +30,6 @@ on:
     #    "https://api.github.com/repos/$ORGANIZATION/$REPOSITORY/dispatches" \
     #    --data "{\"event_type\" : \"build-nightly\" }"'
     #
-    types: [build-nightly]
-
     # build-release will trigger a build of release on master
     #
     # Syntax for invoking this trigger:
@@ -45,8 +43,7 @@ on:
     #    -H "Content-Type: application/json" \
     #    "https://api.github.com/repos/$ORGANIZATION/$REPOSITORY/dispatches" \
     #    --data "{\"event_type\" : \"build-release\" }"'
-    #
-    types: [build-release]
+    types: [build-nightly, build_release]
 
 #
 # The build jobs are organized into three phases:
