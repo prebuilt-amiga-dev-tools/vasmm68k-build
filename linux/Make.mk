@@ -76,7 +76,7 @@ uninstall-deb:
 #  the Git repository and push to origin
 
 update-config:
-	./linux/scripts/update-config.sh "$(NEW_VASM_NIGHTLY_URL)" "$(NEW_VASM_RELEASE_URL)" "$(NEW_VASM_DOC_URL)" "$(NEW_VASM_RELEASE_VERSION)"
+	./linux/scripts/update-config.sh "$(NEW_VASM_RELEASE_URL)" "$(NEW_VASM_RELEASE_VERSION)"
 
 release:
 	./linux/scripts/release.sh "$(VASM_VERSION)"
