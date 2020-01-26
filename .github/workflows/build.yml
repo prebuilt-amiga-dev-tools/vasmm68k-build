@@ -184,18 +184,18 @@ jobs:
         shell: powershell
         run: |
           .\windows\scripts\set-msvc-path.ps1
-          if ((Start-Process nmake.exe -ArgumentList clean,download,build -NoNewWindow -Wait -PassThru).ExitCode) { throw }
+          if ((Start-Process nmake.exe -ArgumentList BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }},clean,download,build -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Create packages
         shell: powershell
         run: |
           .\windows\scripts\set-msvc-path.ps1
           .\windows\scripts\set-wix-path.ps1
-          if ((Start-Process nmake.exe -ArgumentList package -NoNewWindow -Wait -PassThru).ExitCode) { throw }
+          if ((Start-Process nmake.exe -ArgumentList BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }},package -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Test packages
         shell: powershell
         run: |
           .\windows\scripts\set-msvc-path.ps1
-          if ((Start-Process nmake.exe -ArgumentList test-packages -NoNewWindow -Wait -PassThru).ExitCode) { throw }
+          if ((Start-Process nmake.exe -ArgumentList BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }},test-packages -NoNewWindow -Wait -PassThru).ExitCode) { throw }
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
