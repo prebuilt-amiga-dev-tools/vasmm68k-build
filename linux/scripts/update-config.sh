@@ -1,13 +1,12 @@
 #!/bin/bash
 
-if [ $# -ne 3 ]; then
- echo 1>&2 "Usage: $0 VASM_URL VASM_DOC_URL VASM_VERSION"
+if [ $# -ne 2 ]; then
+ echo 1>&2 "Usage: $0 VASM_RELEASE_URL VASM_RELEASE_VERSION"
  exit 1
 fi
 
-VASM_URL="$1"
-VASM_DOC_URL="$2"
-VASM_VERSION="$3"
+VASM_RELEASE_URL="$1"
+VASM_RELEASE_VERSION="$2"
 
 git fetch
 
@@ -20,13 +19,13 @@ fi
 
 # Disallow config update if the tag exists either locally or remotely
 
-if [[ `git tag -l releases/${VASM_VERSION}` ]]; then
-    echo "The releases/${VASM_VERSION} tag already exists locally. Cannot update config."
+if [[ `git tag -l releases/${VASM_RELEASE_VERSION}` ]]; then
+    echo "The releases/${VASM_RELEASE_VERSION} tag already exists locally. Cannot update config."
     exit 1
 fi
 
-if [[ `git ls-remote origin refs/tags/releases/${VASM_VERSION}` ]]; then
-    echo "The releases/${VASM_VERSION} tag already exists in origin. Cannot update config."
+if [[ `git ls-remote origin refs/tags/releases/${VASM_RELEASE_VERSION}` ]]; then
+    echo "The releases/${VASM_RELEASE_VERSION} tag already exists in origin. Cannot update config."
     exit 1
 fi
 
@@ -51,11 +50,10 @@ else
     exit 1
 fi
 
-echo "" > Config.mk
-echo "VASM_URL = ${VASM_URL}" >> Config.mk
-echo "VASM_DOC_URL = ${VASM_DOC_URL}" >> Config.mk
-echo "VASM_VERSION = ${VASM_VERSION}" >> Config.mk
+sed "s/^VASM_RELEASE_URL = \(.*\)/VASM_RELEASE_URL = ${VASM_RELEASE_URL}/; s/^VASM_RELEASE_VERSION = \(.*\)/VASM_RELEASE_VERSION = ${VASM_RELEASE_VERSION}/" < Config.mk > Config.mk2
+cp Config.mk2 Config.mk
+rm Config.mk2
 
 git add .
-git commit -m "Updated config.mk to version ${VASM_VERSION}"
+git commit -m "Updated config.mk to version ${VASM_RELEASE_VERSION}"
 git push

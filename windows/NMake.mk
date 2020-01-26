@@ -1,7 +1,23 @@
 
 # Windows build script
 
-!include Config.mk
+!INCLUDE Config.mk
+
+!IF "$(BUILD_TYPE)" == "RELEASE"
+VASM_URL = "$(VASM_RELEASE_URL)"
+VASM_VERSION = "$(VASM_RELEASE_VERSION)"
+!MESSAGE RELEASE path used
+!ELSEIF "$(BUILD_TYPE)" == "NIGHTLY" || !DEFINED(BUILD_TYPE)
+VASM_URL = "$(VASM_NIGHTLY_URL)"
+# It would be nice if we could have VASM_VERSION = "0.0.0" for nightly builds.
+# However, the .deb packaging flow does not have access to BUILD_TYPE or any local
+#  variables from Make.mk. Therefore, we use VASM_RELEASE_VERSION to keep
+#  the versioning consistent.
+VASM_VERSION = "$(VASM_RELEASE_VERSION)"
+!MESSAGE NIGHTLY path used
+!ELSE 
+!MESSAGE BUILD_TYPE must be undefined, or set to NIGHTLY or RELEASE
+!ENDIF
 
 VASMDIR=vasm
 

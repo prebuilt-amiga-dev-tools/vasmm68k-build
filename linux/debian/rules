@@ -2,7 +2,11 @@
 
 include ../Config.mk
 
-PACKAGEVERSION = $(VASM_VERSION)
+# It would be nice if we could have VASM_VERSION = "0.0.0" for nightly builds.
+# However, the .deb packaging flow does not have access to BUILD_TYPE or any local
+#  variables from Make.mk. Therefore, we use VASM_RELEASE_VERSION to keep
+#  the versioning consistent.
+PACKAGEVERSION = $(VASM_RELEASE_VERSION)
 
 DESTDIR=debian/vasmm68k
 
