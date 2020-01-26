@@ -32,7 +32,6 @@ on:
     #
     types: [build-nightly]
 
-  repository_dispatch:
     # build-release will trigger a build of release on master
     #
     # Syntax for invoking this trigger:
