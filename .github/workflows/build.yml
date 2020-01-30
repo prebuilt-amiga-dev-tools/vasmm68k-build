@@ -259,6 +259,7 @@ jobs:
           draft: false
           bodyFile: changelog-artifacts/changelog-for-version.md
           token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
           artifacts: "linux-deb-artifacts/vasmm68k_${{ steps.global_env.outputs.SOURCE_VERSION }}_amd64.xenial.deb,windows-artifacts/vasmm68k-${{ steps.global_env.outputs.SOURCE_VERSION }}-windows-binaries.zip,windows-artifacts/vasmm68k-${{ steps.global_env.outputs.SOURCE_VERSION }}-windows-installer.msi"
           # # Disabled publishing of Chocolatey package for now.
           # # The file name is not based on VASM_VERSION but on VASM_PACKAGE_VERSION
