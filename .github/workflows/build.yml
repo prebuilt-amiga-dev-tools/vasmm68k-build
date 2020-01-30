@@ -10,20 +10,12 @@ on:
     tags:
       - '**'
 
-    # # Always build when there are new commits to master
-    # branches:
-    #   - master
-    # # Always build release-tags
-    # tags:
-    #   - 'releases/**'
-
-    # Always build pull requests
   pull_request:
+    # Always build pull requests
     branches:
       - '**'
 
   repository_dispatch:
-
     # build-nightly will trigger a build of nightly on master
     #
     # Syntax for invoking this trigger:
@@ -41,7 +33,10 @@ on:
     types: [build-nightly]
 
 #
-# The build jobs are organized into two phases:
+# The build jobs are organized into three phases:
+#
+# Setup:
+#   capture-global-environment-variables - Determine build parameters, and store them for later jobs
 #
 # Build:
 #   extract-changelog     - extracts changelog info from history.txt and formats the result as Markdown
@@ -66,8 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Capture environment variables
-        run: |
-          ./linux/scripts/create-global-environment-variables-script.sh build_results "${GITHUB_REF}" "${{ github.repository }}" "${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/') }}"
+        run: ./linux/scripts/create-global-environment-variables-script.sh build_results "${GITHUB_REF}" "${{ github.repository }}" "${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/') }}"
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -227,7 +221,7 @@ jobs:
         run: BUILD_TYPE=${{ steps.global_env.outputs.BUILD_TYPE }} make test-homebrew-formula
 
   publish-github:
-    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/')
     name: Publish to GitHub Releases
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -273,7 +267,7 @@ jobs:
           # # windows-binaries/vasmm68k.${{ steps.global_env.outputs.SOURCE_VERSION }}.nupkg
 
   publish-apt:
-    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/')
     name: Publish to Apt
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -301,7 +295,7 @@ jobs:
           client-payload: '{ "download_url": "https://github.com/${{ steps.global_env.outputs.SOURCE_ORGANIZATION }}/vasmm68k/releases/download/releases%2F${{ steps.global_env.outputs.SOURCE_VERSION }}/vasmm68k_${{ steps.global_env.outputs.SOURCE_VERSION }}_amd64.xenial.deb", "distribution": "xenial" }'
 
   publish-homebrew:
-    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/'))
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/releases/')
     name: Publish to Homebrew tap
     runs-on: ubuntu-latest
     timeout-minutes: 30
